@@ -1,0 +1,42 @@
+.tango-content {
+    padding: 10px;
+    text-align: center;
+  }
+  
+  /* Basic responsive design */
+  .responsive-img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+  
+  /* Media query for smaller screens */
+  @media (max-width: 768px) {
+    .tango-content {
+      padding: 5px;
+    }
+  
+    h3 {
+      font-size: 16px;
+    }
+  
+    .responsive-img {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+  
+  /* Media query for very small screens */
+  @media (max-width: 480px) {
+    h3 {
+      font-size: 14px;
+    }
+  
+    .responsive-img {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+  

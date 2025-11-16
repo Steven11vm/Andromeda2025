@@ -1,0 +1,36 @@
+.permission-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.permission-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.permission-card.selected {
+    border: 2px solid #0d6efd;
+    background-color: #f0f8ff;
+}
+
+.category-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.category-header:hover {
+    background-color: #e9ecef;
+}
+
+.category-header h5 {
+    margin: 0;
+}
+

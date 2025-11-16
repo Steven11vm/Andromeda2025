@@ -1,0 +1,70 @@
+/* header.css */
+.responsive-header {
+    padding: 10px 0;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+}
+
+.menu-toggle {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.theme-toggle {
+    margin-right: 10px;
+}
+
+.MyAccWrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 576px) {
+    .responsive-header .row {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo-container {
+        justify-content: center;
+        margin-top: -40px; 
+        
+    }
+
+    .logo img {
+        max-width: 100px;
+        margin-bottom: 10px;
+    }
+
+    .header-actions {
+        flex-direction: column-reverse;
+        align-items: center;
+    }
+
+    .menu-toggle {
+        justify-content: center;
+    }
+
+
+
+    .MyAccWrapper {
+        justify-content: center;
+        margin-top: -60px; 
+    }
+    .rounded-circle.theme-toggle{
+        margin-top: -60px; 
+    }
+    .userInfo {
+        margin-top: 10px;
+    }
+}
