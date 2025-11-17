@@ -36,11 +36,28 @@ const SectionServices = () => {
                     @keyframes slideInUp {
                         from {
                             opacity: 0;
-                            transform: translateY(20px);
+                            transform: translateY(30px) scale(0.95);
                         }
                         to {
                             opacity: 1;
-                            transform: translateY(0);
+                            transform: translateY(0) scale(1);
+                        }
+                    }
+                    
+                    @keyframes bounceIn {
+                        0% {
+                            opacity: 0;
+                            transform: scale(0.3) translateY(-50px);
+                        }
+                        50% {
+                            opacity: 1;
+                            transform: scale(1.05) translateY(0);
+                        }
+                        70% {
+                            transform: scale(0.9);
+                        }
+                        100% {
+                            transform: scale(1);
                         }
                     }
                     
@@ -49,31 +66,48 @@ const SectionServices = () => {
                             transform: rotate(0deg) scale(1);
                         }
                         25% {
-                            transform: rotate(-10deg) scale(1.1);
+                            transform: rotate(-15deg) scale(1.15);
                         }
                         50% {
                             transform: rotate(0deg) scale(1);
                         }
                         75% {
-                            transform: rotate(10deg) scale(1.1);
+                            transform: rotate(15deg) scale(1.15);
                         }
                     }
                     
                     @keyframes razorMove {
                         0%, 100% {
-                            transform: translateX(0) rotate(0deg);
+                            transform: translateX(0) rotate(0deg) scale(1);
+                        }
+                        25% {
+                            transform: translateX(8px) rotate(8deg) scale(1.1);
                         }
                         50% {
-                            transform: translateX(5px) rotate(5deg);
+                            transform: translateX(0) rotate(0deg) scale(1);
+                        }
+                        75% {
+                            transform: translateX(-8px) rotate(-8deg) scale(1.1);
                         }
                     }
                     
                     @keyframes pulse {
                         0%, 100% {
                             transform: scale(1);
+                            opacity: 1;
                         }
                         50% {
-                            transform: scale(1.05);
+                            transform: scale(1.1);
+                            opacity: 0.9;
+                        }
+                    }
+                    
+                    @keyframes pulseGlow {
+                        0%, 100% {
+                            box-shadow: 0 0 5px rgba(197, 157, 95, 0.3);
+                        }
+                        50% {
+                            box-shadow: 0 0 20px rgba(197, 157, 95, 0.6), 0 0 30px rgba(197, 157, 95, 0.4);
                         }
                     }
                     
@@ -88,41 +122,164 @@ const SectionServices = () => {
                     
                     @keyframes shimmer {
                         0% {
-                            background-position: -1000px 0;
+                            background-position: -200% 0;
                         }
                         100% {
-                            background-position: 1000px 0;
+                            background-position: 200% 0;
+                        }
+                    }
+                    
+                    @keyframes glow {
+                        0%, 100% {
+                            filter: drop-shadow(0 0 3px rgba(197, 157, 95, 0.5));
+                        }
+                        50% {
+                            filter: drop-shadow(0 0 8px rgba(197, 157, 95, 0.8)) drop-shadow(0 0 12px rgba(197, 157, 95, 0.4));
+                        }
+                    }
+                    
+                    @keyframes float {
+                        0%, 100% {
+                            transform: translateY(0px);
+                        }
+                        50% {
+                            transform: translateY(-5px);
+                        }
+                    }
+                    
+                    @keyframes scaleIn {
+                        from {
+                            opacity: 0;
+                            transform: scale(0.8);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: scale(1);
+                        }
+                    }
+                    
+                    @keyframes slideInRight {
+                        from {
+                            opacity: 0;
+                            transform: translateX(-20px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+                    
+                    @keyframes ripple {
+                        0% {
+                            transform: scale(0);
+                            opacity: 1;
+                        }
+                        100% {
+                            transform: scale(4);
+                            opacity: 0;
+                        }
+                    }
+                    
+                    @keyframes textGlow {
+                        0%, 100% {
+                            text-shadow: 0 0 5px rgba(197, 157, 95, 0.3);
+                        }
+                        50% {
+                            text-shadow: 0 0 15px rgba(197, 157, 95, 0.6), 0 0 25px rgba(197, 157, 95, 0.4);
+                        }
+                    }
+                    
+                    @keyframes borderGlow {
+                        0%, 100% {
+                            border-color: rgba(197, 157, 95, 0.3);
+                            box-shadow: 0 0 5px rgba(197, 157, 95, 0.2);
+                        }
+                        50% {
+                            border-color: rgba(197, 157, 95, 0.6);
+                            box-shadow: 0 0 15px rgba(197, 157, 95, 0.4), 0 0 25px rgba(197, 157, 95, 0.2);
                         }
                     }
                     
                     .service-accordion {
-                        animation: slideInUp 0.5s ease-out;
-                        animation-fill-mode: both;
+                        animation: slideInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+                        position: relative;
+                    }
+                    
+                    .service-accordion::before {
+                        content: '';
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 0;
+                        height: 0;
+                        border-radius: 50%;
+                        background: rgba(197, 157, 95, 0.1);
+                        transform: translate(-50%, -50%);
+                        transition: width 0.6s, height 0.6s;
+                    }
+                    
+                    .service-accordion:active::before {
+                        width: 300px;
+                        height: 300px;
                     }
                     
                     .service-accordion:nth-child(1) { animation-delay: 0.1s; }
-                    .service-accordion:nth-child(2) { animation-delay: 0.2s; }
-                    .service-accordion:nth-child(3) { animation-delay: 0.3s; }
-                    .service-accordion:nth-child(4) { animation-delay: 0.4s; }
-                    .service-accordion:nth-child(5) { animation-delay: 0.5s; }
-                    .service-accordion:nth-child(6) { animation-delay: 0.6s; }
-                    .service-accordion:nth-child(7) { animation-delay: 0.7s; }
-                    .service-accordion:nth-child(8) { animation-delay: 0.8s; }
+                    .service-accordion:nth-child(2) { animation-delay: 0.15s; }
+                    .service-accordion:nth-child(3) { animation-delay: 0.2s; }
+                    .service-accordion:nth-child(4) { animation-delay: 0.25s; }
+                    .service-accordion:nth-child(5) { animation-delay: 0.3s; }
+                    .service-accordion:nth-child(6) { animation-delay: 0.35s; }
+                    .service-accordion:nth-child(7) { animation-delay: 0.4s; }
+                    .service-accordion:nth-child(8) { animation-delay: 0.45s; }
                     
                     .service-icon {
-                        transition: all 0.3s ease;
+                        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                        animation: float 3s ease-in-out infinite;
                     }
                     
                     .service-accordion:hover .service-icon.scissors-icon {
-                        animation: scissorsCut 1.5s ease-in-out infinite;
+                        animation: scissorsCut 1.2s ease-in-out infinite, pulseGlow 2s ease-in-out infinite;
                     }
                     
                     .service-accordion:hover .service-icon.star-icon {
-                        animation: razorMove 2s ease-in-out infinite;
+                        animation: razorMove 1.8s ease-in-out infinite, pulseGlow 2s ease-in-out infinite;
+                    }
+                    
+                    .service-accordion:not(:hover) .service-icon {
+                        animation: float 3s ease-in-out infinite;
                     }
                     
                     .expanded-icon {
-                        animation: rotateIcon 0.3s ease-out forwards;
+                        animation: rotateIcon 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, pulse 1s ease-in-out infinite;
+                    }
+                    
+                    .service-name {
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .service-accordion:hover .service-name {
+                        animation: textGlow 2s ease-in-out infinite;
+                    }
+                    
+                    .price-container {
+                        animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+                        animation-delay: 0.2s;
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .price-container:hover {
+                        transform: scale(1.02);
+                        box-shadow: 0 4px 12px rgba(197, 157, 95, 0.3);
+                        border-color: rgba(197, 157, 95, 0.5) !important;
+                    }
+                    
+                    .service-description {
+                        animation: slideInRight 0.5s ease-out both;
+                        animation-delay: 0.1s;
+                    }
+                    
+                    .service-accordion.expanded {
+                        animation: borderGlow 2s ease-in-out infinite;
                     }
                 `}
             </style>
@@ -132,11 +289,12 @@ const SectionServices = () => {
                 gap: '16px',
                 width: '100%',
                 maxWidth: '900px',
-                margin: '0 auto'
+                margin: '0 auto',
+                padding: '0 10px'
             }}>
                 {services.map((service, index) => (
                     <Accordion
-                        className='service-accordion'
+                        className={`service-accordion ${expanded === service.id ? 'expanded' : ''}`}
                         key={service.id}
                         expanded={expanded === service.id}
                         onChange={() => handleExpansion(service.id)}
@@ -145,31 +303,37 @@ const SectionServices = () => {
                         sx={[
                             {
                                 background: expanded === service.id 
-                                    ? 'linear-gradient(135deg, rgba(197, 157, 95, 0.15) 0%, rgba(197, 157, 95, 0.08) 100%)'
-                                    : 'linear-gradient(135deg, rgba(248, 249, 250, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%)',
+                                    ? 'linear-gradient(135deg, rgba(197, 157, 95, 0.2) 0%, rgba(197, 157, 95, 0.12) 100%)'
+                                    : 'linear-gradient(135deg, rgba(235, 233, 233, 0.9) 0%, rgba(248, 249, 250, 0.85) 100%)',
                                 backdropFilter: 'blur(10px)',
                                 boxShadow: expanded === service.id
                                     ? '0 8px 24px rgba(197, 157, 95, 0.25), 0 0 0 1px rgba(197, 157, 95, 0.15)'
-                                    : '0 2px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.05)',
+                                    : '0 2px 12px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04)',
                                 borderRadius: '12px',
                                 overflow: 'hidden',
                                 border: expanded === service.id 
                                     ? '1px solid rgba(197, 157, 95, 0.4)'
-                                    : '1px solid rgba(0, 0, 0, 0.08)',
+                                    : '1px solid rgba(0, 0, 0, 0.06)',
                                 '&:before': {
                                     display: 'none',
                                 },
                                 marginBottom: '0',
-                                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
                                 position: 'relative',
                                 '&:hover': {
+                                    background: expanded === service.id 
+                                        ? 'linear-gradient(135deg, rgba(197, 157, 95, 0.25) 0%, rgba(197, 157, 95, 0.15) 100%)'
+                                        : 'linear-gradient(135deg, rgba(235, 233, 233, 0.95) 0%, rgba(248, 249, 250, 0.9) 100%)',
                                     boxShadow: expanded === service.id
                                         ? '0 12px 32px rgba(197, 157, 95, 0.3), 0 0 0 1px rgba(197, 157, 95, 0.2)'
-                                        : '0 6px 16px rgba(0, 0, 0, 0.15)',
-                                    transform: 'translateY(-2px)',
+                                        : '0 6px 16px rgba(0, 0, 0, 0.1)',
+                                    transform: 'translateY(-4px) scale(1.01)',
                                     borderColor: expanded === service.id 
                                         ? 'rgba(197, 157, 95, 0.4)'
-                                        : 'rgba(197, 157, 95, 0.2)',
+                                        : 'rgba(197, 157, 95, 0.25)',
+                                },
+                                '&:active': {
+                                    transform: 'translateY(-1px) scale(0.98)',
                                 },
                                 '&::after': {
                                     content: '""',
@@ -178,8 +342,13 @@ const SectionServices = () => {
                                     left: 0,
                                     width: expanded === service.id ? '100%' : '0%',
                                     height: '3px',
-                                    background: 'linear-gradient(90deg, #c59d5f, #dfbd83, #c59d5f)',
-                                    transition: 'width 0.4s ease',
+                                    background: expanded === service.id 
+                                        ? 'linear-gradient(90deg, #c59d5f, #dfbd83, #f0d4a0, #dfbd83, #c59d5f)'
+                                        : 'linear-gradient(90deg, #c59d5f, #dfbd83, #c59d5f)',
+                                    backgroundSize: expanded === service.id ? '200% 100%' : '100% 100%',
+                                    transition: 'all 0.4s ease',
+                                    animation: expanded === service.id ? 'shimmer 3s linear infinite' : 'none',
+                                    boxShadow: expanded === service.id ? '0 2px 8px rgba(197, 157, 95, 0.4)' : 'none',
                                 },
                                 '& .MuiAccordionDetails-root': {
                                     display: expanded === service.id ? 'block' : 'none',
@@ -199,10 +368,12 @@ const SectionServices = () => {
                                     sx={{ 
                                         color: '#c59d5f',
                                         fontSize: expanded === service.id ? '28px' : '24px',
-                                        transition: 'all 0.3s ease',
+                                        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                                        filter: expanded === service.id ? 'drop-shadow(0 0 8px rgba(197, 157, 95, 0.5))' : 'none',
                                         '&:hover': {
                                             color: '#dfbd83',
-                                            transform: 'scale(1.1)'
+                                            transform: 'scale(1.2) rotate(5deg)',
+                                            filter: 'drop-shadow(0 0 12px rgba(197, 157, 95, 0.7))'
                                         }
                                     }} 
                                 />
@@ -213,12 +384,12 @@ const SectionServices = () => {
                                 padding: expanded === service.id ? '16px 20px' : '12px 16px',
                                 minHeight: expanded === service.id ? '64px' : '48px',
                                 '&:hover': {
-                                    backgroundColor: 'rgba(197, 157, 95, 0.05)',
+                                    backgroundColor: 'rgba(197, 157, 95, 0.08)',
                                 },
                                 '&.Mui-expanded': {
                                     minHeight: '64px',
                                     padding: '16px 20px',
-                                    backgroundColor: 'rgba(197, 157, 95, 0.08)',
+                                    backgroundColor: 'rgba(197, 157, 95, 0.12)',
                                 },
                                 '&:not(.Mui-expanded)': {
                                     minHeight: '48px',
@@ -247,10 +418,12 @@ const SectionServices = () => {
                                         border: expanded === service.id
                                             ? '1px solid rgba(197, 157, 95, 0.3)'
                                             : '1px solid rgba(197, 157, 95, 0.2)',
-                                        transition: 'all 0.3s ease',
+                                        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
                                         boxShadow: expanded === service.id
                                             ? '0 4px 12px rgba(197, 157, 95, 0.2)'
-                                            : '0 2px 6px rgba(197, 157, 95, 0.1)'
+                                            : '0 2px 6px rgba(197, 157, 95, 0.1)',
+                                        cursor: 'pointer',
+                                        position: 'relative'
                                     }}
                                 >
                                     {index % 2 === 0 ? (
@@ -269,17 +442,21 @@ const SectionServices = () => {
                                         />
                                     )}
                                 </div>
-                                <Typography sx={{ 
-                                    fontWeight: 600,
-                                    fontSize: expanded === service.id ? '18px' : '16px',
-                                    color: expanded === service.id ? '#c59d5f' : '#2c3e50',
-                                    letterSpacing: '0.5px',
-                                    transition: 'all 0.3s ease',
-                                    textShadow: expanded === service.id ? '0 2px 4px rgba(197, 157, 95, 0.2)' : 'none',
-                                    '@media (max-width: 480px)': {
-                                        fontSize: expanded === service.id ? '16px' : '15px'
-                                    }
-                                }}>
+                                <Typography 
+                                    className="service-name"
+                                    sx={{ 
+                                        fontWeight: 600,
+                                        fontSize: expanded === service.id ? '18px' : '16px',
+                                        color: expanded === service.id ? '#c59d5f' : '#2c3e50',
+                                        letterSpacing: '0.5px',
+                                        transition: 'all 0.3s ease',
+                                        textShadow: expanded === service.id ? '0 2px 4px rgba(197, 157, 95, 0.2)' : 'none',
+                                        transform: expanded === service.id ? 'scale(1.02)' : 'scale(1)',
+                                        '@media (max-width: 480px)': {
+                                            fontSize: expanded === service.id ? '16px' : '15px'
+                                        }
+                                    }}
+                                >
                                     {service.name}
                                 </Typography>
                             </div>
@@ -287,49 +464,69 @@ const SectionServices = () => {
                         <AccordionDetails sx={{ 
                             padding: expanded === service.id ? '20px' : '0',
                             margin: 0,
-                            display: expanded === service.id ? 'block' : 'none'
+                            display: expanded === service.id ? 'block' : 'none',
+                            animation: expanded === service.id ? 'slideInRight 0.5s ease-out' : 'none'
                         }}>
                             <div style={{ 
                                 display: 'flex', 
                                 flexDirection: 'column', 
                                 gap: '12px',
                                 paddingTop: '8px',
-                                borderTop: expanded === service.id ? '1px solid rgba(197, 157, 95, 0.1)' : 'none'
+                                borderTop: expanded === service.id ? '1px solid rgba(197, 157, 95, 0.1)' : 'none',
+                                transition: 'all 0.3s ease'
                             }}>
-                                <Typography sx={{
-                                    color: '#34495e',
-                                    lineHeight: '1.8',
-                                    fontSize: '16px',
-                                    fontWeight: 400,
-                                    '@media (max-width: 480px)': {
-                                        fontSize: '15px',
-                                        lineHeight: '1.7'
-                                    }
-                                }}>
+                                <Typography 
+                                    className="service-description"
+                                    sx={{
+                                        color: '#34495e',
+                                        lineHeight: '1.8',
+                                        fontSize: '16px',
+                                        fontWeight: 400,
+                                        transition: 'all 0.3s ease',
+                                        '@media (max-width: 480px)': {
+                                            fontSize: '15px',
+                                            lineHeight: '1.7'
+                                        }
+                                    }}
+                                >
                                     {service.description}
                                 </Typography>
                                 {service.price && (
-                                    <div style={{
-                                        marginTop: '8px',
-                                        padding: '12px 16px',
-                                        background: 'linear-gradient(135deg, rgba(197, 157, 95, 0.1), rgba(197, 157, 95, 0.05))',
-                                        borderRadius: '8px',
-                                        border: '1px solid rgba(197, 157, 95, 0.2)'
-                                    }}>
+                                    <div 
+                                        className="price-container"
+                                        style={{
+                                            marginTop: '8px',
+                                            padding: '12px 16px',
+                                            background: 'linear-gradient(135deg, rgba(197, 157, 95, 0.15), rgba(197, 157, 95, 0.08))',
+                                            borderRadius: '8px',
+                                            border: '1px solid rgba(197, 157, 95, 0.3)',
+                                            transition: 'all 0.3s ease',
+                                            position: 'relative',
+                                            overflow: 'hidden'
+                                        }}
+                                    >
                                         <Typography sx={{
                                             color: '#c59d5f',
                                             fontSize: '18px',
                                             fontWeight: 600,
                                             display: 'flex',
                                             alignItems: 'center',
-                                            gap: '8px'
+                                            gap: '8px',
+                                            position: 'relative',
+                                            zIndex: 1,
+                                            transition: 'all 0.3s ease'
                                         }}>
                                             <span>Precio:</span>
-                                            <span>{new Intl.NumberFormat('es-CO', { 
-                                                style: 'currency', 
-                                                currency: 'COP',
-                                                minimumFractionDigits: 0 
-                                            }).format(service.price)}</span>
+                                            <span style={{
+                                                fontWeight: 700,
+                                                textShadow: '0 2px 4px rgba(197, 157, 95, 0.3)'
+                                            }}>
+                                                {new Intl.NumberFormat('es-CO', { 
+                                                    style: 'currency', 
+                                                    currency: 'COP',
+                                                    minimumFractionDigits: 0 
+                                                }).format(service.price)}
+                                            </span>
                                         </Typography>
                                     </div>
                                 )}
