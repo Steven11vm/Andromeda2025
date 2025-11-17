@@ -1,0 +1,484 @@
+/* ============================================
+   LANDING PAGE HEADER - APPLE-STYLE DESIGN
+   Professional & Minimalist Desktop Design
+   ============================================ */
+
+/* ============================================
+   DESKTOP STYLES - APPLE INSPIRED
+   ============================================ */
+
+/* Header Base Styles - Apple Style */
+.header-index {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    letter-spacing: -0.01em;
+}
+
+/* Logo - Prominent & Bold */
+.logo-index {
+    font-weight: 700 !important;
+    font-size: 26px !important;
+    letter-spacing: -0.01em !important;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    opacity: 1 !important;
+    border: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.logo-index:hover {
+    opacity: 0.9 !important;
+    transform: translateY(-1px);
+}
+
+.logo-index img {
+    width: 56px !important;
+    height: 56px !important;
+    margin-right: 12px !important;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
+    border: none !important;
+    outline: none !important;
+}
+
+.logo-index:hover img {
+    transform: scale(1.05);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+}
+
+.logo-index span {
+    font-size: 26px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+    color: rgba(255, 255, 255, 1) !important;
+    transition: color 0.3s ease !important;
+    line-height: 1.2 !important;
+}
+
+.logo-index:hover span {
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+/* Navigation Links - Apple Style Typography */
+.navBar-index {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+}
+
+.navBar-index a {
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    letter-spacing: -0.01em !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none !important;
+    position: relative;
+    padding: 8px 0;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-transform: none !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.navBar-index a::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.9);
+    transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.navBar-index a:hover {
+    color: rgba(255, 255, 255, 1) !important;
+    transform: translateY(-1px);
+}
+
+.navBar-index a:hover::after {
+    width: 100%;
+}
+
+/* Navigation Container */
+.nav-container {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+}
+
+/* Auth Buttons - Apple Style */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Login Button - Apple Style */
+.book-now-btn {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 980px !important;
+    padding: 10px 22px !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    letter-spacing: -0.01em !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-transform: none !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.book-now-btn:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: rgba(255, 255, 255, 1) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.book-now-btn:active {
+    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* User Login Button - Apple Style */
+.user-login-btn {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-transform: none !important;
+    font-weight: 400 !important;
+    font-size: 13px !important;
+    letter-spacing: -0.01em !important;
+    padding: 8px 14px 8px 8px !important;
+    border-radius: 980px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.user-login-btn:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    color: rgba(255, 255, 255, 1) !important;
+    transform: translateY(-1px);
+}
+
+.user-login-btn .MuiAvatar-root {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* User Menu */
+.user-menu {
+    position: relative;
+    z-index: 1001;
+}
+
+/* Menu Landing Page - Original Dark Style */
+.menu-landingPage {
+    margin-top: 10px !important;
+}
+
+.menu-landingPage .MuiPaper-root {
+    background-color: #171614 !important;
+    color: #fff !important;
+}
+
+.menu-item-landingPage {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 8px 16px !important;
+    transition: all 0.2s ease !important;
+    color: #fff !important;
+    border-bottom: 1px solid #1a1919 !important;
+}
+
+.menu-item-landingPage:last-child {
+    border-bottom: none !important;
+}
+
+.menu-item-landingPage:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+.menu-item-landingPage svg {
+    font-size: 20px !important;
+    margin-right: 15px !important;
+    color: #fff !important;
+    transition: color 0.2s ease !important;
+    flex-shrink: 0 !important;
+}
+
+.menu-item-landingPage:hover svg {
+    color: #fff !important;
+}
+
+/* Mobile Menu Icon */
+.mobile-menu-icon {
+    display: none !important;
+    z-index: 1001;
+    padding: 10px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.mobile-menu-icon:hover {
+    background-color: rgba(184, 155, 88, 0.2) !important;
+    transform: scale(1.1);
+}
+
+.mobile-menu-icon svg {
+    font-size: 28px;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - TABLET
+   ============================================ */
+@media screen and (max-width: 1024px) {
+    .header-index {
+        padding: 20px 40px !important;
+    }
+
+    .navBar-index {
+        gap: 36px;
+    }
+
+    .navBar-index a {
+        font-size: 12px !important;
+    }
+
+    .logo-index {
+        font-size: 22px !important;
+    }
+
+    .logo-index img {
+        width: 48px !important;
+        height: 48px !important;
+    }
+
+    .logo-index span {
+        font-size: 22px !important;
+    }
+
+    .book-now-btn {
+        padding: 9px 20px !important;
+        font-size: 12px !important;
+    }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE LARGE
+   ============================================ */
+@media screen and (max-width: 768px) {
+    .mobile-menu-icon {
+        display: flex !important;
+    }
+
+    .nav-container {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        height: calc(100vh - 70px);
+        background-color: rgba(0, 0, 0, 0.98);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 30px 20px;
+        transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5);
+        overflow-y: auto;
+        z-index: 1000;
+        gap: 0;
+    }
+
+    .nav-container.nav-open {
+        transform: translateX(0);
+    }
+
+    .navBar-index {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+    }
+
+    .navBar-index a {
+        padding: 18px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 1.5px;
+        transition: all 0.3s ease;
+        width: 100%;
+        position: relative;
+    }
+
+    .navBar-index a:hover {
+        padding-left: 15px;
+        color: #b89b58 !important;
+    }
+
+    .navBar-index a::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        background: #b89b58;
+        transition: width 0.3s ease;
+    }
+
+    .navBar-index a:hover::after {
+        width: 100%;
+    }
+
+    .auth-buttons {
+        margin-left: 0;
+        margin-top: 30px;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .user-menu {
+        width: 100%;
+    }
+
+    .user-menu .MuiButton-root {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 12px 0 !important;
+    }
+
+    .book-now-btn {
+        width: 100%;
+        padding: 14px 24px !important;
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        letter-spacing: 1px !important;
+    }
+
+    .logo-index {
+        font-size: 20px;
+    }
+
+    .logo-index img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .logo-index span {
+        font-size: 18px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE SMALL
+   ============================================ */
+@media screen and (max-width: 480px) {
+    .nav-container {
+        top: 60px;
+        padding: 25px 15px;
+    }
+
+    .navBar-index a {
+        padding: 16px 0;
+        font-size: 15px;
+    }
+
+    .book-now-btn {
+        padding: 12px 20px !important;
+        font-size: 14px !important;
+    }
+
+    .logo-index {
+        font-size: 18px;
+    }
+
+    .logo-index img {
+        width: 35px;
+        height: 35px;
+    }
+
+    .logo-index span {
+        font-size: 16px;
+    }
+
+    .mobile-menu-icon {
+        padding: 8px !important;
+    }
+
+    .mobile-menu-icon svg {
+        font-size: 24px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE EXTRA SMALL
+   ============================================ */
+@media screen and (max-width: 360px) {
+    .nav-container {
+        padding: 20px 12px;
+    }
+
+    .navBar-index a {
+        padding: 14px 0;
+        font-size: 14px;
+    }
+
+    .logo-index {
+        font-size: 16px;
+    }
+
+    .logo-index img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .logo-index span {
+        font-size: 14px;
+    }
+
+    .book-now-btn {
+        padding: 10px 16px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .nav-container,
+    .navBar-index a,
+    .mobile-menu-icon,
+    .menu-item-landingPage {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* Focus states for keyboard navigation */
+.navBar-index a:focus-visible,
+.mobile-menu-icon:focus-visible,
+.book-now-btn:focus-visible,
+.user-login-btn:focus-visible {
+    outline: 2px solid #b89b58;
+    outline-offset: 2px;
+}
+

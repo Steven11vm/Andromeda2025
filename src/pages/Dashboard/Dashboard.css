@@ -1,0 +1,327 @@
+/* Dashboard Responsive Styles */
+
+/* Tablet */
+@media screen and (max-width: 1024px) {
+  .right-content {
+    padding: 90px 20px 10px;
+  }
+
+  .right-content .row .spacing {
+    padding: 15px;
+    height: auto;
+    min-height: 60px;
+  }
+
+  .right-content .row .spacing .Title {
+    font-size: 18px;
+  }
+
+  .card.shadow.border-0 {
+    padding: 20px !important;
+  }
+
+  .card .card-body h5 {
+    font-size: 1.1rem !important;
+  }
+
+  .chart-container {
+    height: 250px !important;
+  }
+}
+
+/* Mobile Large */
+@media screen and (max-width: 768px) {
+  .right-content {
+    padding: 80px 15px 10px;
+  }
+
+  .right-content .row .spacing {
+    margin: 15px 0px;
+    padding: 12px 15px;
+    height: auto;
+    min-height: 50px;
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .right-content .row .spacing .col-sm-5 {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 10px;
+  }
+
+  .right-content .row .spacing .col-sm-7 {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  .right-content .row .spacing .Title {
+    font-size: 18px;
+    margin-left: 0;
+  }
+
+  /* Breadcrumbs responsive */
+  .MuiBreadcrumbs-root {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .MuiBreadcrumbs-root .MuiChip-root {
+    font-size: 0.75rem !important;
+    height: 24px !important;
+    padding: 0 8px !important;
+  }
+
+  .MuiBreadcrumbs-root .MuiChip-icon {
+    font-size: 14px !important;
+  }
+
+  /* Cards container */
+  .card.shadow.border-0 {
+    padding: 15px !important;
+    margin: 10px 0;
+  }
+
+  .card.shadow.border-0 .row {
+    margin: 0;
+  }
+
+  /* Chart cards - Stack vertically */
+  .card.shadow.border-0 .row .col-md-6 {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 20px;
+  }
+
+  /* Card headers */
+  .card .card-body {
+    padding: 15px !important;
+  }
+
+  .card .card-body .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start !important;
+  }
+
+  .card .card-body h5 {
+    font-size: 1.1rem !important;
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  /* Select filters */
+  .card .card-body .form-select {
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 0.875rem !important;
+    padding: 8px 12px !important;
+    min-height: 40px;
+  }
+
+  /* Chart containers */
+  .chart-container {
+    width: 100%;
+    height: 250px !important;
+    margin-top: 15px;
+  }
+
+  .chart-container .recharts-wrapper {
+    width: 100% !important;
+  }
+
+  /* ResponsiveContainer adjustments */
+  .recharts-responsive-container {
+    width: 100% !important;
+  }
+
+  /* Chart text sizes */
+  .recharts-text {
+    font-size: 11px !important;
+  }
+
+  .recharts-legend-wrapper {
+    font-size: 11px !important;
+  }
+
+  /* Pie chart adjustments */
+  .recharts-pie {
+    transform: scale(0.85);
+  }
+
+  /* Bar chart adjustments */
+  .recharts-bar {
+    font-size: 10px;
+  }
+
+  /* Tooltip adjustments */
+  .recharts-tooltip-wrapper {
+    font-size: 12px !important;
+  }
+
+  /* PDF Download Button */
+  .card.shadow.border-0 .row.mt-4 .col-12 {
+    padding: 0;
+  }
+
+  .card.shadow.border-0 .row.mt-4 button {
+    width: 100%;
+    padding: 12px 20px !important;
+    font-size: 0.9rem !important;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  /* Remove hover effects on mobile */
+  .card.shadow.border-0 .row .col-md-6 .card {
+    transition: none !important;
+  }
+
+  .card.shadow.border-0 .row .col-md-6 .card:hover {
+    transform: none !important;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+  }
+}
+
+/* Mobile Small */
+@media screen and (max-width: 480px) {
+  .right-content {
+    padding: 75px 10px 10px;
+  }
+
+  .right-content .row .spacing {
+    margin: 10px 0px;
+    padding: 10px 12px;
+    min-height: 45px;
+  }
+
+  .right-content .row .spacing .Title {
+    font-size: 16px;
+  }
+
+  /* Breadcrumbs smaller */
+  .MuiBreadcrumbs-root .MuiChip-root {
+    font-size: 0.7rem !important;
+    height: 22px !important;
+    padding: 0 6px !important;
+  }
+
+  .MuiBreadcrumbs-root .MuiChip-icon {
+    font-size: 12px !important;
+  }
+
+  /* Cards container */
+  .card.shadow.border-0 {
+    padding: 12px !important;
+  }
+
+  .card.shadow.border-0 .row .col-md-6 {
+    margin-bottom: 15px;
+  }
+
+  /* Card body */
+  .card .card-body {
+    padding: 12px !important;
+  }
+
+  .card .card-body h5 {
+    font-size: 1rem !important;
+    padding-bottom: 8px;
+  }
+
+  /* Select filters */
+  .card .card-body .form-select {
+    font-size: 0.8rem !important;
+    padding: 8px 10px !important;
+    min-height: 38px;
+  }
+
+  /* Chart containers */
+  .chart-container {
+    height: 220px !important;
+    margin-top: 12px;
+  }
+
+  /* Pie chart smaller on small screens */
+  .recharts-pie {
+    transform: scale(0.75);
+  }
+
+  /* Chart text even smaller */
+  .recharts-text {
+    font-size: 10px !important;
+  }
+
+  .recharts-legend-wrapper {
+    font-size: 10px !important;
+  }
+
+  /* PDF Download Button */
+  .card.shadow.border-0 .row.mt-4 button {
+    padding: 10px 15px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .card.shadow.border-0 .row.mt-4 button i {
+    font-size: 14px !important;
+  }
+}
+
+/* Extra small devices */
+@media screen and (max-width: 360px) {
+  .right-content {
+    padding: 70px 8px 10px;
+  }
+
+  .right-content .row .spacing {
+    padding: 8px 10px;
+  }
+
+  .right-content .row .spacing .Title {
+    font-size: 15px;
+  }
+
+  .card.shadow.border-0 {
+    padding: 10px !important;
+  }
+
+  .card .card-body {
+    padding: 10px !important;
+  }
+
+  .chart-container {
+    height: 200px !important;
+  }
+
+  .recharts-pie {
+    transform: scale(0.7);
+  }
+}
+
+/* Landscape orientation adjustments */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+  .chart-container {
+    height: 200px !important;
+  }
+
+  .right-content .row .spacing {
+    min-height: 45px;
+  }
+}
+
+/* Ensure charts are touch-friendly */
+@media (hover: none) and (pointer: coarse) {
+  .card.shadow.border-0 .row .col-md-6 .card {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .card.shadow.border-0 .row .col-md-6 .card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+

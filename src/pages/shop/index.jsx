@@ -290,6 +290,9 @@ export default function Component() {
   };
 
   const handleCheckout = async () => {
+    // Cerrar el drawer en móvil para que se vea la alerta
+    setDrawerOpen(false);
+    
     if (!isLoggedIn) {
       Swal.fire('Error', 'Debes iniciar sesión para realizar un pedido.', 'error');
       return;
@@ -873,11 +876,56 @@ export default function Component() {
         </Badge>
       </Fab>
 
+      {/* Botón flotante del carrito para desktop */}
+      <Fab
+        color="primary"
+        aria-label="cart"
+        className="cart-fab-desktop"
+        onClick={() => setDrawerOpen(true)}
+        sx={{
+          display: { xs: 'none', md: 'flex' },
+          position: 'fixed',
+          bottom: 30,
+          right: 30,
+          zIndex: 999,
+          backgroundColor: '#c59d5f',
+          color: '#fff',
+          width: 64,
+          height: 64,
+          '&:hover': {
+            backgroundColor: '#dfbd83',
+            transform: 'scale(1.1)',
+          },
+          boxShadow: '0 8px 24px rgba(197, 157, 95, 0.4)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          '& .MuiSvgIcon-root': {
+            color: '#fff',
+            fontSize: '28px',
+          },
+        }}
+      >
+        <Badge 
+          badgeContent={getTotalItems()} 
+          color="error"
+          sx={{
+            '& .MuiBadge-badge': {
+              backgroundColor: '#ff4444',
+              color: '#fff',
+              fontSize: '12px',
+              minWidth: '20px',
+              height: '20px',
+            }
+          }}
+        >
+          <ShoppingBagIcon sx={{ color: '#fff' }} />
+        </Badge>
+      </Fab>
+
       <Drawer
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        variant="persistent"
+        variant="temporary"
         className="cart-drawer cart-drawer-desktop"
         ModalProps={{
           keepMounted: true,
@@ -892,103 +940,129 @@ export default function Component() {
         >
           <CloseIcon />
         </IconButton>
-        <div className="drawer-content">
-          <div className="drawer-header">
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          height: '100%',
+          overflow: 'hidden',
+          width: '360px'
+        }}>
+          <div className="drawer-header" style={{ padding: '20px 20px 10px 20px' }}>
             <Typography variant="h6">Carrito de Compras</Typography>
           </div>
 
-          {Object.keys(cart).length === 0 ? (
-            <Typography className="empty-cart-message">Tu carrito está vacío</Typography>
-          ) : (
-            <List>
-              {Object.entries(cart).map(([productId, quantity]) => {
-                const product = products.find((p) => p.id === parseInt(productId));
-                if (!product) return null;
+          <Box sx={{ 
+            flex: 1, 
+            overflowY: 'auto', 
+            padding: '0 20px',
+            marginBottom: '20px'
+          }}>
+            {Object.keys(cart).length === 0 ? (
+              <Typography className="empty-cart-message">Tu carrito está vacío</Typography>
+            ) : (
+              <List>
+                {Object.entries(cart).map(([productId, quantity]) => {
+                  const product = products.find((p) => p.id === parseInt(productId));
+                  if (!product) return null;
 
-                return (
-                  <ListItem key={productId} className="cart-item">
-                    <ListItemAvatar>
-                      <Avatar src={product.Image} alt={product.Product_Name} />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={<span className="product-name">{product.Product_Name}</span>}
-                      secondary={
-                        <span>
-                          <span className="price-text">
-                            {new Intl.NumberFormat('es-CO', {
-                              style: 'currency',
-                              currency: 'COP',
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 0
-                            }).format(product.Price * quantity)}
+                  return (
+                    <ListItem key={productId} className="cart-item">
+                      <ListItemAvatar>
+                        <Avatar src={product.Image} alt={product.Product_Name} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={<span className="product-name">{product.Product_Name}</span>}
+                        secondary={
+                          <span>
+                            <span className="price-text">
+                              {new Intl.NumberFormat('es-CO', {
+                                style: 'currency',
+                                currency: 'COP',
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
+                              }).format(product.Price * quantity)}
+                            </span>
                           </span>
-                        </span>
-                      }
-                    />
-                    <div className="quantity-controls">
-                      <IconButton
-                        onClick={() => decreaseQuantity(productId)}
-                        className="quantity-button"
-                        size="small"
-                      >
-                        <RemoveIcon />
-                      </IconButton>
-                      <span className="quantity-display">{quantity}</span>
-                      <IconButton
-                        onClick={() => increaseQuantity(productId)}
-                        className="quantity-button"
-                        size="small"
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </div>
-                  </ListItem>
-                );
-              })}
-            </List>
-          )}
-          <div className="drawer-footer">
-            <div className="total-amount">
-              <Typography variant="h6">Total:</Typography>
-              <Typography variant="h6">
-                {formattedTotal}$
-              </Typography>
+                        }
+                      />
+                      <div className="quantity-controls">
+                        <IconButton
+                          onClick={() => decreaseQuantity(productId)}
+                          className="quantity-button"
+                          size="small"
+                        >
+                          <RemoveIcon />
+                        </IconButton>
+                        <span className="quantity-display">{quantity}</span>
+                        <IconButton
+                          onClick={() => increaseQuantity(productId)}
+                          className="quantity-button"
+                          size="small"
+                        >
+                          <AddIcon />
+                        </IconButton>
+                      </div>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            )}
+          </Box>
+
+          <Box sx={{ 
+            padding: '20px', 
+            borderTop: '1px solid rgba(197, 157, 95, 0.2)',
+            backgroundColor: '#1a1a1a'
+          }}>
+            <div className="drawer-footer">
+              <div className="total-amount">
+                <Typography variant="h6">Total:</Typography>
+                <Typography variant="h6">
+                  {new Intl.NumberFormat('es-CO', { 
+                    style: 'currency', 
+                    currency: 'COP',
+                    minimumFractionDigits: 0 
+                  }).format(total)} COP
+                </Typography>
+              </div>
             </div>
-          </div>
 
-          <Button
-            variant="contained"
-            onClick={handleShowOrders}
-            sx={{
-              backgroundColor: '#c59d5f',
-              '&:hover': {
-                backgroundColor: '#c59d5f',
-              },
-              color: '#fff'
-            }}
-          >
-            Ver Mis Pedidos
-          </Button>
-
-          <div className="cart-buttons1">
-            <Button
-              variant="outlined"
-              onClick={clearCart}
-              className="barber-button barber-button-clear"
-              startIcon={<DeleteOutlineIcon />}
-            >
-              Vaciar Carrito
-            </Button>
             <Button
               variant="contained"
-              onClick={handleCheckout}
-              className="barber-button barber-button-checkout"
-              startIcon={<ShoppingBagIcon />}
+              onClick={handleShowOrders}
+              sx={{
+                backgroundColor: '#c59d5f',
+                '&:hover': {
+                  backgroundColor: '#dfbd83',
+                },
+                color: '#fff',
+                width: '100%',
+                marginBottom: '10px'
+              }}
             >
-              Realizar pedido
+              Ver Mis Pedidos
             </Button>
-          </div>
-        </div>
+
+            <div className="cart-buttons1">
+              <Button
+                variant="outlined"
+                onClick={clearCart}
+                className="barber-button barber-button-clear"
+                startIcon={<DeleteOutlineIcon />}
+              >
+                Vaciar Carrito
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleCheckout}
+                className="barber-button barber-button-checkout"
+                startIcon={<ShoppingBagIcon />}
+              >
+                Realizar pedido
+              </Button>
+            </div>
+          </Box>
+        </Box>
       </Drawer>
 
       {/* Drawer móvil desde abajo */}
@@ -1032,105 +1106,129 @@ export default function Component() {
         >
           <CloseIcon />
         </IconButton>
-        <div className="drawer-content">
-          <div className="drawer-header">
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          height: '100%',
+          overflow: 'hidden',
+          maxHeight: '90vh'
+        }}>
+          <div className="drawer-header" style={{ padding: '20px 20px 10px 20px' }}>
             <Typography variant="h6">Carrito de Compras</Typography>
           </div>
 
-          {Object.keys(cart).length === 0 ? (
-            <Typography className="empty-cart-message">Tu carrito está vacío</Typography>
-          ) : (
-            <List>
-              {Object.entries(cart).map(([productId, quantity]) => {
-                const product = products.find((p) => p.id === parseInt(productId));
-                if (!product) return null;
+          <Box sx={{ 
+            flex: 1, 
+            overflowY: 'auto', 
+            padding: '0 20px',
+            marginBottom: '20px'
+          }}>
+            {Object.keys(cart).length === 0 ? (
+              <Typography className="empty-cart-message">Tu carrito está vacío</Typography>
+            ) : (
+              <List>
+                {Object.entries(cart).map(([productId, quantity]) => {
+                  const product = products.find((p) => p.id === parseInt(productId));
+                  if (!product) return null;
 
-                return (
-                  <ListItem key={productId} className="cart-item">
-                    <ListItemAvatar>
-                      <Avatar src={product.Image} alt={product.Product_Name} />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={<span className="product-name">{product.Product_Name}</span>}
-                      secondary={
-                        <span>
-                          <span className="price-text">
-                            {new Intl.NumberFormat('es-CO', {
-                              style: 'currency',
-                              currency: 'COP',
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 0
-                            }).format(product.Price * quantity)}
+                  return (
+                    <ListItem key={productId} className="cart-item">
+                      <ListItemAvatar>
+                        <Avatar src={product.Image} alt={product.Product_Name} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={<span className="product-name">{product.Product_Name}</span>}
+                        secondary={
+                          <span>
+                            <span className="price-text">
+                              {new Intl.NumberFormat('es-CO', {
+                                style: 'currency',
+                                currency: 'COP',
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
+                              }).format(product.Price * quantity)}
+                            </span>
                           </span>
-                        </span>
-                      }
-                    />
-                    <div className="quantity-controls">
-                      <IconButton
-                        onClick={() => decreaseQuantity(productId)}
-                        className="quantity-button"
-                        size="small"
-                      >
-                        <RemoveIcon />
-                      </IconButton>
-                      <span className="quantity-display">{quantity}</span>
-                      <IconButton
-                        onClick={() => increaseQuantity(productId)}
-                        className="quantity-button"
-                        size="small"
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </div>
-                  </ListItem>
-                );
-              })}
-            </List>
-          )}
-          <div className="drawer-footer">
-            <div className="total-amount">
-              <Typography variant="h6">Total:</Typography>
-              <Typography variant="h6">
-                {formattedTotal}$
-              </Typography>
+                        }
+                      />
+                      <div className="quantity-controls">
+                        <IconButton
+                          onClick={() => decreaseQuantity(productId)}
+                          className="quantity-button"
+                          size="small"
+                        >
+                          <RemoveIcon />
+                        </IconButton>
+                        <span className="quantity-display">{quantity}</span>
+                        <IconButton
+                          onClick={() => increaseQuantity(productId)}
+                          className="quantity-button"
+                          size="small"
+                        >
+                          <AddIcon />
+                        </IconButton>
+                      </div>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            )}
+          </Box>
+
+          <Box sx={{ 
+            padding: '20px', 
+            borderTop: '1px solid rgba(197, 157, 95, 0.2)',
+            backgroundColor: '#1a1a1a'
+          }}>
+            <div className="drawer-footer">
+              <div className="total-amount">
+                <Typography variant="h6">Total:</Typography>
+                <Typography variant="h6">
+                  {new Intl.NumberFormat('es-CO', { 
+                    style: 'currency', 
+                    currency: 'COP',
+                    minimumFractionDigits: 0 
+                  }).format(total)} COP
+                </Typography>
+              </div>
             </div>
-          </div>
 
-          <Button
-            variant="contained"
-            onClick={handleShowOrders}
-            sx={{
-              backgroundColor: '#c59d5f',
-              '&:hover': {
-                backgroundColor: '#dfbd83',
-              },
-              color: '#fff',
-              width: '100%',
-              marginBottom: '10px'
-            }}
-          >
-            Ver Mis Pedidos
-          </Button>
-
-          <div className="cart-buttons1">
-            <Button
-              variant="outlined"
-              onClick={clearCart}
-              className="barber-button barber-button-clear"
-              startIcon={<DeleteOutlineIcon />}
-            >
-              Vaciar Carrito
-            </Button>
             <Button
               variant="contained"
-              onClick={handleCheckout}
-              className="barber-button barber-button-checkout"
-              startIcon={<ShoppingBagIcon />}
+              onClick={handleShowOrders}
+              sx={{
+                backgroundColor: '#c59d5f',
+                '&:hover': {
+                  backgroundColor: '#dfbd83',
+                },
+                color: '#fff',
+                width: '100%',
+                marginBottom: '10px'
+              }}
             >
-              Realizar pedido
+              Ver Mis Pedidos
             </Button>
-          </div>
-        </div>
+
+            <div className="cart-buttons1">
+              <Button
+                variant="outlined"
+                onClick={clearCart}
+                className="barber-button barber-button-clear"
+                startIcon={<DeleteOutlineIcon />}
+              >
+                Vaciar Carrito
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleCheckout}
+                className="barber-button barber-button-checkout"
+                startIcon={<ShoppingBagIcon />}
+              >
+                Realizar pedido
+              </Button>
+            </div>
+          </Box>
+        </Box>
       </Drawer>
 
       {/* Modal de vista detallada del producto */}

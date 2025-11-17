@@ -49,6 +49,13 @@ const Sidebar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const handleLinkClick = () => {
+    // Cerrar el menú móvil cuando se hace clic en un enlace
+    if (window.innerWidth <= 768) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
   return (
     <>
       <IconButton
@@ -57,11 +64,17 @@ const Sidebar = () => {
       >
         {isMobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
       </IconButton>
+      {isMobileMenuOpen && (
+        <div 
+          className={`sidebar-overlay ${isMobileMenuOpen ? 'active' : ''}`}
+          onClick={toggleMobileMenu}
+        />
+      )}
       <div className={`sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
         <ul>
           {hasPermission('Dashboard') && (
             <li>
-              <Link to="/dashboard">
+              <Link to="/dashboard" onClick={handleLinkClick}>
                 <Button className={`w-100 ${activeTab === 0 ? 'active' : ''}`} onClick={() => isOpensubMenu(0)}>
                   <span className='icon'><TbLayoutDashboardFilled /></span>
                   <span className='sidebar-option'>Panel de control</span>
@@ -72,7 +85,7 @@ const Sidebar = () => {
           )}
           {hasPermission('Dashboard') && (
             <li>
-              <Link to="/profile">
+              <Link to="/profile" onClick={handleLinkClick}>
                 <Button className={`w-100 ${activeTab === 1 ? 'active' : ''}`} onClick={() => isOpensubMenu(1)}>
                   <span className='icon'><BsFillPersonVcardFill /></span>
                   <span className='sidebar-option'>Mi perfil</span>
@@ -91,7 +104,7 @@ const Sidebar = () => {
               <div className={`submenuWrapper ${activeTab === 2 && isToggleSubmenu ? 'colapse' : 'colapsed'}`}>
                 <ul className='submenu'>
                   <li>
-                    <Link to="/roles">Roles</Link>
+                    <Link to="/roles" onClick={handleLinkClick}>Roles</Link>
                   </li>
                 </ul>
               </div>
@@ -107,7 +120,7 @@ const Sidebar = () => {
               <div className={`submenuWrapper ${activeTab === 3 && isToggleSubmenu ? 'colapse' : 'colapsed'}`}>
                 <ul className='submenu'>
                   <li>
-                    <Link to="/users">Usuarios</Link>
+                    <Link to="/users" onClick={handleLinkClick}>Usuarios</Link>
                   </li>
                 </ul>
               </div>
@@ -124,22 +137,22 @@ const Sidebar = () => {
                 <ul className='submenu'>
                   {hasPermission('Categorias') && (
                     <li>
-                      <Link to="/categories">Categorías</Link>
+                      <Link to="/categories" onClick={handleLinkClick}>Categorías</Link>
                     </li>
                   )}
                   {hasPermission('Productos') && (
                     <li>
-                      <Link to="/products">Productos</Link>
+                      <Link to="/products" onClick={handleLinkClick}>Productos</Link>
                     </li>
                   )}
                   {hasPermission('Proveedores') && (
                     <li>
-                      <Link to="/suppliers">Proveedores</Link>
+                      <Link to="/suppliers" onClick={handleLinkClick}>Proveedores</Link>
                     </li>
                   )}
                   {hasPermission('Compras') && (
                     <li>
-                      <Link to="/shopping">Compras</Link>
+                      <Link to="/shopping" onClick={handleLinkClick}>Compras</Link>
                     </li>
                   )}
                 </ul>
@@ -157,19 +170,11 @@ const Sidebar = () => {
                 <ul className='submenu'>
                   {hasPermission('Servicios') && (
                     <li>
-                      <Link to="/services">Servicios</Link>
+                      <Link to="/services" onClick={handleLinkClick}>Servicios</Link>
                     </li>
                   )}
-                  {hasPermission('Programacion de empleado') && (
-                    <li>
-                      <Link to="/programming">Programación empleados</Link>
-                    </li>
-                  )}
-                  {hasPermission('Ausencias') && (
-                    <li>
-                      <Link to="/absences">Ausencias</Link>
-                    </li>
-                  )}
+                 
+                
                 </ul>
               </div>
             </li>
@@ -185,17 +190,17 @@ const Sidebar = () => {
                 <ul className='submenu'>
                   {hasPermission('Citas') && (
                     <li>
-                      <Link to="/appointment">Citas</Link>
+                      <Link to="/appointment" onClick={handleLinkClick}>Citas</Link>
                     </li>
                   )}
                   {hasPermission('Pedidos') && (
                     <li>
-                      <Link to="/orders">Pedidos</Link>
+                      <Link to="/orders" onClick={handleLinkClick}>Pedidos</Link>
                     </li>
                   )}
                   {hasPermission('Ventas') && (
                     <li>
-                      <Link to="/sales">Ventas</Link>
+                      <Link to="/sales" onClick={handleLinkClick}>Ventas</Link>
                     </li>
                   )}
                 </ul>
@@ -205,7 +210,7 @@ const Sidebar = () => {
         </ul>
         <div className='logoutWrapper'>
           <div className='logoutBox'>
-            <Link to="/tango">
+            <Link to="/tango" onClick={handleLinkClick}>
               <Button variant="contained" className='btn-golden' >Guia de Usuarios</Button>
             </Link>
           </div>

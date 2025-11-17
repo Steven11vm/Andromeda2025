@@ -585,6 +585,8 @@ header .logo-index span {
     flex-direction: column;
     height: 100%;
     padding: 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
 }
 
 .drawer-header {
@@ -1630,6 +1632,8 @@ header .logo-index span {
 
     .drawer-content {
         padding: 20px 15px;
+        overflow-y: auto;
+        max-height: calc(90vh - 200px);
     }
 
     .drawer-header {
@@ -1889,6 +1893,16 @@ header .logo-index span {
 
 .cart-fab-mobile:active {
     transform: scale(0.9);
+}
+
+/* Botón flotante del carrito desktop */
+.cart-fab-desktop {
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cart-fab-desktop:active {
+    transform: scale(0.95);
 }
 
 @keyframes fadeInUp {

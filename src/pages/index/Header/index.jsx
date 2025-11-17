@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MyContext } from '../../../App.js';
 import logo from '../../../assets/images/logo-light.png';
@@ -8,6 +8,7 @@ import { GrUserAdmin } from "react-icons/gr";
 import { GiExitDoor } from "react-icons/gi";
 import { GrUser } from 'react-icons/gr';
 import MenuIcon from '@mui/icons-material/Menu';
+import './header.css';
 
 const Header = ({ scrollToServices, scrollToContact }) => {
     const context = useContext(MyContext);
@@ -19,25 +20,16 @@ const Header = ({ scrollToServices, scrollToContact }) => {
     const [isNavOpen, setIsNavOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 0);
-        };
+    const open = Boolean(anchorEl);
+    const isAdminOrEmployee = useMemo(() => userRole === '1' || userRole === '2', [userRole]);
+    const isClient = useMemo(() => userRole === '3', [userRole]);
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    useEffect(() => {
-        context.setIsHideSidebarAndHeader(true);
-        context.setThemeMode(false);
-        checkLoginStatus();
-    }, [context]);
-
-    const checkLoginStatus = () => {
+    // Check login status
+    const checkLoginStatus = useCallback(() => {
         const token = localStorage.getItem('jwtToken');
         const storedEmail = localStorage.getItem('userName');
         const idRole = localStorage.getItem('roleId');
+        
         if (token && storedEmail && idRole) {
             setIsLoggedIn(true);
             setUserEmail(storedEmail);
@@ -47,215 +39,190 @@ const Header = ({ scrollToServices, scrollToContact }) => {
             setUserEmail('');
             setUserRole('');
         }
-    };
+    }, []);
 
-    const handleLogin = () => {
+    // Scroll handler
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 0);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Initialize context and check login
+    useEffect(() => {
+        context.setIsHideSidebarAndHeader(true);
+        context.setThemeMode(false);
+        checkLoginStatus();
+    }, [context, checkLoginStatus]);
+
+    // Menu handlers - Defined first to avoid initialization errors
+    const handleMenuClick = useCallback((event) => {
+        setAnchorEl(event.currentTarget);
+    }, []);
+
+    const handleMenuClose = useCallback(() => {
+        setAnchorEl(null);
+    }, []);
+
+    // Navigation handlers
+    const handleLogin = useCallback(() => {
         navigate('/login');
-    };
+    }, [navigate]);
 
-    const handledashboard = () => {
+    const handleDashboard = useCallback(() => {
+        handleMenuClose();
         context.setIsHideSidebarAndHeader(false);
         navigate('/services');
-    };
+        setIsNavOpen(false);
+    }, [context, navigate, handleMenuClose]);
 
-    const handleMenuClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
-
-    const handleLogout = () => {
+    // Logout handler
+    const handleLogout = useCallback(() => {
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('roleId');
         localStorage.removeItem('userEmail');
         setIsLoggedIn(false);
         setUserEmail('');
         handleMenuClose();
-        toast.error('Sesion cerrada', {
+        setIsNavOpen(false);
+        
+        toast.error('Sesión cerrada', {
             position: "top-right",
             autoClose: 1000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
-            progress: undefined,
             onClose: () => navigate('/index')
         });
-    };
+    }, [navigate, handleMenuClose]);
 
-    const toggleNav = () => {
-        setIsNavOpen(!isNavOpen);
-    };
+    // Navigation toggle
+    const toggleNav = useCallback(() => {
+        setIsNavOpen(prev => !prev);
+    }, []);
 
-    const getUserInitial = () => {
+    const closeNav = useCallback(() => {
+        setIsNavOpen(false);
+    }, []);
+
+    // Scroll handlers
+    const handleScrollToServices = useCallback(() => {
+        scrollToServices?.();
+        closeNav();
+    }, [scrollToServices, closeNav]);
+
+    const handleScrollToContact = useCallback(() => {
+        scrollToContact?.();
+        closeNav();
+    }, [scrollToContact, closeNav]);
+
+    // Handle profile navigation
+    const handleProfileClick = useCallback(() => {
+        handleMenuClose();
+        closeNav();
+    }, [handleMenuClose, closeNav]);
+
+    // Get user initial
+    const getUserInitial = useCallback(() => {
         return userEmail && userEmail.length > 0 ? userEmail[0].toUpperCase() : '?';
-    };
+    }, [userEmail]);
 
     return (
         <header className={`header-index ${isScrolled ? 'abajo' : ''}`}>
-            <style>
-                {`
-            
-                .menu-landingPage {
-                    margin-top: 10px;
-                }
-                    
-                .menu-item-landingPage {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                }
-                .mobile-menu-icon {
-                    display: none !important;
-                    z-index: 1001;
-                }
-                .user-menu {
-                    position: relative;
-                    z-index: 1001;
-                }
-                @media (max-width: 768px) {
-                    .mobile-menu-icon {
-                        display: flex !important;
-                    }
-                    .nav-container {
-                        position: fixed;
-                        top: 70px;
-                        left: 0;
-                        right: 0;
-                        height: calc(100vh - 70px);
-                        background-color: rgba(0, 0, 0, 0.98);
-                        backdrop-filter: blur(10px);
-                        flex-direction: column;
-                        align-items: flex-start;
-                        padding: 30px 20px;
-                        transform: translateX(-100%);
-                        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                        box-shadow: 4px 0 20px rgba(0,0,0,0.3);
-                        overflow-y: auto;
-                        z-index: 1000;
-                    }
-                    .nav-container.nav-open {
-                        transform: translateX(0);
-                    }
-                    .navBar-index {
-                        flex-direction: column;
-                        width: 100%;
-                        gap: 0;
-                    }
-                    .navBar-index a {
-                        padding: 18px 0;
-                        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                        font-size: 16px;
-                        font-weight: 500;
-                        letter-spacing: 1.5px;
-                        transition: all 0.3s ease;
-                        width: 100%;
-                    }
-                    .navBar-index a:hover {
-                        padding-left: 15px;
-                        color: #b89b58 !important;
-                    }
-                    .auth-buttons {
-                        margin-left: 0;
-                        margin-top: 30px;
-                        width: 100%;
-                    }
-                    .user-menu {
-                        width: 100%;
-                    }
-                    .user-menu .MuiButton-root {
-                        width: 100%;
-                        justify-content: flex-start;
-                        padding: 12px 0;
-                    }
-                    .book-now-btn {
-                        width: 100%;
-                        padding: 14px 24px !important;
-                        font-size: 15px !important;
-                        font-weight: 600 !important;
-                        letter-spacing: 1px !important;
-                    }
-                    .logo-index {
-                        font-size: 20px;
-                    }
-                    .logo-index img {
-                        width: 40px;
-                    }
-                    .logo-index span {
-                        font-size: 18px;
-                    }
-                }
-                @media (max-width: 480px) {
-                    .nav-container {
-                        top: 60px;
-                        padding: 25px 15px;
-                    }
-                    .navBar-index a {
-                        padding: 16px 0;
-                        font-size: 15px;
-                    }
-                    .book-now-btn {
-                        padding: 12px 20px !important;
-                        font-size: 14px !important;
-                    }
-                    .logo-index {
-                        font-size: 18px;
-                    }
-                    .logo-index img {
-                        width: 35px;
-                    }
-                    .logo-index span {
-                        font-size: 16px;
-                    }
-                }
-                `}
-            </style>
-            <Link to={'/'} className='logo-index'>
-                <img src={logo} alt="Logo" />
+            {/* Logo */}
+            <Link to="/" className="logo-index" aria-label="Ir al inicio">
+                <img 
+                    src={logo} 
+                    alt="Barberia Orion Logo" 
+                    loading="eager"
+                    width="50"
+                    height="50"
+                />
                 <span>Barberia Orion</span>
             </Link>
+
+            {/* Mobile Menu Toggle */}
             <IconButton 
                 className="mobile-menu-icon" 
                 onClick={toggleNav}
-                sx={{
-                    color: isScrolled ? '#fff' : '#fff',
-                    padding: '10px',
-                    backgroundColor: isScrolled ? 'rgba(184, 155, 88, 0.1)' : 'rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                        backgroundColor: 'rgba(184, 155, 88, 0.2)',
-                        transform: 'scale(1.1)'
-                    }
-                }}
+                aria-label="Abrir menú de navegación"
+                aria-expanded={isNavOpen}
+                aria-controls="nav-container"
             >
-                <MenuIcon sx={{ fontSize: '28px' }} />
+                <MenuIcon />
             </IconButton>
-            <div className={`nav-container ${isNavOpen ? 'nav-open' : ''}`}>
-                <nav className='navBar-index'>
-                    <Link to='/index' onClick={() => setIsNavOpen(false)}>INICIO</Link>
-                    <Link to='#' onClick={() => { scrollToServices(); setIsNavOpen(false); }}>SERVICIOS</Link>
-                    {userRole == 3 && (
-                        <Link to='/appointmentView' onClick={() => setIsNavOpen(false)}>CITAS</Link>
+
+            {/* Navigation Container */}
+            <div 
+                id="nav-container"
+                className={`nav-container ${isNavOpen ? 'nav-open' : ''}`}
+                aria-hidden={!isNavOpen}
+            >
+                {/* Navigation Links */}
+                <nav className="navBar-index" aria-label="Navegación principal">
+                    <Link 
+                        to="/index" 
+                        onClick={closeNav}
+                        aria-label="Ir a inicio"
+                    >
+                        INICIO
+                    </Link>
+                    <Link 
+                        to="#" 
+                        onClick={handleScrollToServices}
+                        aria-label="Ver servicios"
+                    >
+                        SERVICIOS
+                    </Link>
+                    {isClient && (
+                        <Link 
+                            to="/appointmentView" 
+                            onClick={closeNav}
+                            aria-label="Ver mis citas"
+                        >
+                            CITAS
+                        </Link>
                     )}
-                    <Link to='/shop' onClick={() => setIsNavOpen(false)}>PRODUCTOS</Link>
-                    <Link to='#' onClick={() => { scrollToContact(); setIsNavOpen(false); }}>CONTACTO</Link>
+                    <Link 
+                        to="/shop" 
+                        onClick={closeNav}
+                        aria-label="Ver productos"
+                    >
+                        PRODUCTOS
+                    </Link>
+                    <Link 
+                        to="#" 
+                        onClick={handleScrollToContact}
+                        aria-label="Ver contacto"
+                    >
+                        CONTACTO
+                    </Link>
                 </nav>
+
+                {/* Auth Buttons */}
                 <div className="auth-buttons">
                     {isLoggedIn && userEmail ? (
                         <div className="user-menu">
                             <Button
                                 onClick={handleMenuClick}
-                                className="userLoginn"
+                                className="user-login-btn"
+                                aria-label="Menú de usuario"
+                                aria-expanded={open}
+                                aria-haspopup="true"
                                 startIcon={
                                     <Avatar
                                         sx={{
                                             width: 32,
                                             height: 32,
-                                            backgroundColor: '#b89b58'
+                                            backgroundColor: '#b89b58',
+                                            fontSize: '14px',
+                                            fontWeight: 600
                                         }}
+                                        aria-label={`Avatar de ${userEmail}`}
                                     >
                                         {getUserInitial()}
                                     </Avatar>
@@ -265,9 +232,12 @@ const Header = ({ scrollToServices, scrollToContact }) => {
                             </Button>
                             <Menu 
                                 anchorEl={anchorEl} 
-                                open={Boolean(anchorEl)} 
-                                onClose={handleMenuClose} 
-                                className='menu-landingPage'
+                                open={open} 
+                                onClose={handleMenuClose}
+                                className="menu-landingPage"
+                                MenuListProps={{
+                                    'aria-labelledby': 'user-menu-button',
+                                }}
                                 anchorOrigin={{
                                     vertical: 'bottom',
                                     horizontal: 'right',
@@ -276,16 +246,45 @@ const Header = ({ scrollToServices, scrollToContact }) => {
                                     vertical: 'top',
                                     horizontal: 'right',
                                 }}
+                                PaperProps={{
+                                    elevation: 0,
+                                    sx: {
+                                        borderRadius: '8px',
+                                        overflow: 'hidden',
+                                        background: '#171614 !important',
+                                        color: '#fff !important',
+                                        mt: '10px',
+                                        minWidth: '200px',
+                                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+                                        '& .MuiMenuItem-root': {
+                                            color: '#fff !important',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(255, 255, 255, 0.1) !important',
+                                            }
+                                        }
+                                    }
+                                }}
                             >
-                                {userRole == 1 || userRole == 2 ? (
-                                    <MenuItem onClick={handledashboard} className='menu-item-landingPage'>
+                                {isAdminOrEmployee && (
+                                    <MenuItem 
+                                        onClick={handleDashboard} 
+                                        className="menu-item-landingPage"
+                                    >
                                         <GrUserAdmin /> Administrar
                                     </MenuItem>
-                                ) : null}
-                                <MenuItem component={Link} to='/profileview' onClick={() => setIsNavOpen(false)} className='menu-item-landingPage'>
+                                )}
+                                <MenuItem 
+                                    component={Link} 
+                                    to="/profileview" 
+                                    onClick={handleProfileClick} 
+                                    className="menu-item-landingPage"
+                                >
                                     <GrUser /> Mi perfil
                                 </MenuItem>
-                                <MenuItem onClick={handleLogout} className='menu-item-landingPage'>
+                                <MenuItem 
+                                    onClick={handleLogout} 
+                                    className="menu-item-landingPage"
+                                >
                                     <GiExitDoor /> Cerrar Sesión
                                 </MenuItem>
                             </Menu>
@@ -295,6 +294,7 @@ const Header = ({ scrollToServices, scrollToContact }) => {
                             variant="contained"
                             className="book-now-btn"
                             onClick={handleLogin}
+                            aria-label="Iniciar sesión"
                         >
                             Iniciar sesión
                         </Button>

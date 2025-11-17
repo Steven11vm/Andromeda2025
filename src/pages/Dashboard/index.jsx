@@ -13,6 +13,7 @@ import { IoCart } from "react-icons/io5"
 import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer'
 import { renderToString } from 'react-dom/server'
 import Chart from 'chart.js/auto'
+import './Dashboard.css'
 
 
 

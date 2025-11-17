@@ -1,5 +1,327 @@
 /* Estilos responsive premium para páginas de citas */
 
+/* Estilos para la nueva interfaz de citas */
+.appointment-container {
+  width: 100%;
+}
+
+.appointment-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.appointment-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.appointment-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 16px !important;
+  font-size: 15px !important;
+  letter-spacing: 0.3px;
+}
+
+.appointment-table td {
+  vertical-align: middle;
+  padding: 14px !important;
+  font-size: 15px !important;
+  line-height: 1.6;
+}
+
+.appointment-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.appointment-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Botones de vista (Día/Semana/Mes) */
+.appointment-view-buttons {
+  display: inline-flex;
+  gap: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+}
+
+.appointment-view-buttons .MuiButton-root {
+  border-radius: 0 !important;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border: none !important;
+  border-right: 1px solid #e0e0e0 !important;
+}
+
+.appointment-view-buttons .MuiButton-root:last-child {
+  border-right: none !important;
+}
+
+.appointment-view-buttons .MuiButton-root.MuiButton-contained {
+  background-color: #1976d2 !important;
+  color: #fff !important;
+}
+
+.appointment-view-buttons .MuiButton-root.MuiButton-outlined {
+  background-color: #fff !important;
+  color: #666 !important;
+}
+
+.appointment-view-buttons .MuiButton-root:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.appointment-view-buttons .MuiButton-root.MuiButton-contained:hover {
+  background-color: #1565c0 !important;
+}
+
+/* Selector de fecha */
+.date-picker-input {
+  padding: 10px 16px !important;
+  font-size: 15px !important;
+  border-radius: 8px !important;
+  border: 1px solid #ddd !important;
+}
+
+.date-picker-input:focus {
+  border-color: #1976d2 !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
+}
+
+/* Selector de cliente */
+.client-filter-select {
+  padding: 10px 16px !important;
+  font-size: 15px !important;
+  border-radius: 8px !important;
+}
+
+.client-filter-select:focus {
+  border-color: #1976d2 !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
+}
+
+/* Botón de registrar */
+.btn-register {
+  padding: 12px 24px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  border-radius: 8px !important;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3) !important;
+}
+
+.btn-register:hover {
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4) !important;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-buttons .MuiButton-root {
+  min-width: 44px;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease;
+}
+
+.action-buttons .MuiButton-root:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.action-buttons .MuiButton-root svg {
+  font-size: 16px;
+  display: block !important;
+  width: 16px;
+  height: 16px;
+}
+
+.action-buttons .MuiButton-root {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Estilos para la tabla de servicios */
+.services-table-wrapper {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.services-table-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: visible !important;
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+}
+
+.services-table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.services-table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.services-table-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.services-table-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.services-table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.services-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  padding: 16px !important;
+  font-size: 15px !important;
+  letter-spacing: 0.3px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.services-table td {
+  vertical-align: middle;
+  padding: 14px !important;
+  font-size: 15px !important;
+  line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow: visible;
+}
+
+.service-select,
+.employee-select {
+  position: relative;
+  z-index: 10;
+  font-size: 15px !important;
+  padding: 10px 16px !important;
+  border-radius: 8px !important;
+  border: 1px solid #ddd !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 44px !important;
+  background-color: #fff !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.service-select:focus,
+.employee-select:focus {
+  border-color: #1976d2 !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
+  outline: none !important;
+  z-index: 1000 !important;
+}
+
+.service-select:hover,
+.employee-select:hover {
+  border-color: #1976d2 !important;
+}
+
+/* Asegurar que los dropdowns se muestren correctamente */
+.service-select option,
+.employee-select option {
+  padding: 10px 16px !important;
+  font-size: 15px !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+}
+
+/* Mejoras para el contenedor de servicios */
+.card-detail {
+  overflow: visible !important;
+  position: relative;
+}
+
+.card-detail .table-responsive {
+  overflow-x: auto;
+  overflow-y: visible !important;
+  position: relative;
+}
+
+/* Asegurar que los selects abiertos no se corten */
+.services-table tbody tr {
+  position: relative;
+}
+
+.services-table tbody tr td {
+  position: relative;
+}
+
+/* Cuando un select está enfocado, asegurar que el dropdown se muestre */
+.service-select:focus,
+.employee-select:focus {
+  position: relative;
+  z-index: 1000 !important;
+}
+
+/* Asegurar que el contenedor padre permita overflow */
+.services-table-container:has(.service-select:focus),
+.services-table-container:has(.employee-select:focus) {
+  overflow: visible !important;
+  z-index: 1000;
+}
+
+/* Mejoras generales de espaciado */
+.right-content .card {
+  padding: 28px !important;
+  border-radius: 12px;
+}
+
+.right-content .card .d-flex.justify-content-between {
+  margin-bottom: 28px;
+  gap: 20px;
+}
+
+.right-content .card .d-flex.gap-3 {
+  gap: 16px !important;
+}
+
+/* Espaciado en la tabla */
+.table-responsive {
+  margin-top: 24px;
+}
+
+/* Mejora en los badges de estado */
+.badge {
+  padding: 6px 12px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+  letter-spacing: 0.3px;
+}
+
 /* Mejoras para formularios en móvil */
 @media screen and (max-width: 768px) {
   .right-content .card {
@@ -26,7 +348,7 @@
   }
   
   .table {
-    min-width: 600px;
+    min-width: 800px;
   }
   
   .table thead th {
@@ -62,34 +384,6 @@
     flex-wrap: wrap;
   }
   
-  /* FullCalendar responsive */
-  .fc {
-    font-size: 12px;
-  }
-  
-  .fc-toolbar {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .fc-toolbar-chunk {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 5px;
-  }
-  
-  .fc-button {
-    padding: 8px 12px !important;
-    font-size: 12px !important;
-    min-height: 40px;
-  }
-  
-  .fc-toolbar-title {
-    font-size: 18px !important;
-    text-align: center;
-  }
-  
   /* Controles del calendario */
   .d-flex.justify-content-between {
     flex-direction: column;
@@ -118,6 +412,17 @@
   .d-flex.justify-content-between > div .btn-register {
     width: 100%;
     margin-bottom: 10px;
+  }
+  
+  /* Botones de acción en móvil */
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .action-buttons .MuiButton-root {
+    width: 100%;
+    margin-bottom: 5px;
   }
   
   /* Modal responsive */

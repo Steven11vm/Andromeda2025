@@ -112,15 +112,18 @@ const Login = () => {
             <section className="loginSection">
                 <div className="loginBox text-center">
                     <div className='logo'>
-                        <img src={Logo} width="60px" alt="logo" />
+                        <img src={Logo} alt="logo" />
                         <h5 className='fw-bolder'>Ingresar a Barberia Orion</h5>
                     </div>
                     <div className='wrapper mt-3 card border p-4'>
-                        <form onSubmit={handleLogin}>
+                        <form onSubmit={handleLogin} autoComplete="on">
                             <div className={`form-group mb-3 position-relative ${inputIndex === 0 && 'focus'}`}>
                                 <span className='icon'><MdEmail /></span>
                                 <input
                                     type="email"
+                                    name="email"
+                                    id="email"
+                                    autoComplete="username"
                                     className={`form-control ${emailError ? 'is-invalid' : ''}`}
                                     placeholder='Ingrese su correo'
                                     value={email}
@@ -134,6 +137,9 @@ const Login = () => {
                                 <span className='icon'><RiLockPasswordFill /></span>
                                 <input
                                     type={isShowPassword ? 'text' : 'password'}
+                                    name="password"
+                                    id="password"
+                                    autoComplete="current-password"
                                     className={`form-control ${passwordError ? 'is-invalid' : ''}`}
                                     placeholder='Ingrese su contraseña'
                                     value={password}

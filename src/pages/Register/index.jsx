@@ -186,14 +186,14 @@ const Register = () => {
 
     return (
         <>
-            <img src={patern} className='loginPatern' />
+            <img src={patern} className='loginPatern' alt="Pattern Background" />
             <section className="loginSection SignUpSection p-0">
-                <div className="row w-100">
-                    <div className="col-md-8 d-flex align-items-center justify-content-center flex-column part1">
+                <div className="row w-100 m-0 signup-row">
+                    <div className="col-12 col-md-8 d-flex align-items-center justify-content-center flex-column part1">
                         <h1>Registrate con BARBERIA ORION y disfruta de nuestros servicios.</h1>
                         <p>Estamos dedicados a ofrecer una amplia variedad de servicios de barbería y cuidado personal. Además, contamos con una selección de productos de alta calidad para atender las necesidades de nuestros clientes. Con un enfoque en la satisfacción y el bienestar de quienes nos visitan, nos destacamos por nuestro profesionalismo y compromiso con la excelencia en cada uno de sus servicios y productos ofrecidos.</p>
                     </div>
-                    <div className="col-md-4 p-right p-0">
+                    <div className="col-12 col-md-4 p-right p-0 signup-form-col">
                         <div className="loginBox text-center">
                             <div className='logo'>
                                 <img src={Logo} width="60px" alt="logo" />
@@ -275,7 +275,7 @@ const Register = () => {
                                             placeholder='Confirme su contraseña'
                                             value={confirmePassword}
                                             onChange={handleConfirmePasswordChange}
-                                            onFocus={() => focusInput(3)}
+                                            onFocus={() => focusInput(4)}
                                             onBlur={() => setInputIndex(null)}
                                             required
                                         />

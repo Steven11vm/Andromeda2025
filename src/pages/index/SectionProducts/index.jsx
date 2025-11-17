@@ -15,8 +15,81 @@ const SectionProducts = () => {
     }, []);
 
     const getProducts = async () => {
-        const response = await axios.get(url);
-        setProducts(response.data);
+        try {
+            const response = await axios.get(url);
+            
+            // Filtrar solo productos activos
+            const activeProducts = response.data.filter(product => 
+                product.status === 'A' || !product.status
+            );
+            
+            // Usar Map para agrupar por ID de producto de manera más robusta
+            const productsMap = new Map();
+            const seenIds = new Set();
+            
+            activeProducts.forEach(product => {
+                // Asegurar que el ID sea válido - probar diferentes formatos
+                const productId = product.id || product.product_id || product.ID || product.Id;
+                
+                // Si no hay ID válido, usar nombre como fallback
+                if (!productId) {
+                    const productName = product.Product_Name || product.name || product.product_name;
+                    if (!productName) return; // Saltar si tampoco tiene nombre
+                }
+                
+                const key = productId || `name-${product.Product_Name || product.name || product.product_name}`;
+                
+                // Si ya vimos este ID, comparar y mantener el mejor
+                if (seenIds.has(key)) {
+                    const existingProduct = productsMap.get(key);
+                    const existingStock = Number(existingProduct?.Stock || existingProduct?.stock || 0);
+                    const newStock = Number(product.Stock || product.stock || 0);
+                    
+                    // Mantener el producto con mayor stock
+                    if (newStock > existingStock) {
+                        productsMap.set(key, product);
+                    }
+                } else {
+                    // Primera vez que vemos este ID
+                    seenIds.add(key);
+                    productsMap.set(key, product);
+                }
+            });
+            
+            // Convertir el Map a array de productos únicos
+            const uniqueProducts = Array.from(productsMap.values());
+            
+            // Filtrar cualquier duplicado adicional usando un Set con IDs
+            const finalProducts = [];
+            const finalSeenIds = new Set();
+            
+            uniqueProducts.forEach(product => {
+                const productId = product.id || product.product_id || product.ID || product.Id;
+                const productName = product.Product_Name || product.name || product.product_name;
+                const uniqueKey = productId ? `id-${productId}` : `name-${productName}`;
+                
+                if (!finalSeenIds.has(uniqueKey)) {
+                    finalSeenIds.add(uniqueKey);
+                    finalProducts.push(product);
+                }
+            });
+            
+            // Ordenar por ID para mantener consistencia
+            finalProducts.sort((a, b) => {
+                const idA = a.id || a.product_id || a.ID || a.Id || 0;
+                const idB = b.id || b.product_id || b.ID || b.Id || 0;
+                return Number(idA) - Number(idB);
+            });
+            
+            // Log para debugging
+            console.log('Productos únicos finales:', finalProducts.length, 'de', activeProducts.length, 'productos activos');
+            console.log('IDs únicos:', Array.from(finalSeenIds));
+            
+            setProducts(finalProducts);
+        } catch (error) {
+            console.error('Error al obtener productos:', error);
+            setProducts([]);
+        }
     };
 
 
@@ -80,16 +153,36 @@ const SectionProducts = () => {
                     swipeable={true}
                     draggable={true}
                     showDots={false}
-                    infinite={true}
+                    infinite={products.length > 1}
                     autoPlay={false}
                     keyBoardControl={true}
                     customTransition="transform 300ms ease-in-out"
                     transitionDuration={300}
                     containerClass="carousel-container"
                     itemClass="carousel-item-padding-40-px"
+                    removeArrowOnDeviceType={["tablet", "mobile"]}
                 >
-                    {products.map((product) => (
-                        <div className='card card-product-carousel' key={product.id} style={{
+                    {products.filter((product, index, self) => {
+                        // Filtro adicional para asegurar que no haya duplicados en el renderizado
+                        const productId = product.id || product.product_id || product.ID || product.Id;
+                        const productName = product.Product_Name || product.name || product.product_name || '';
+                        const uniqueKey = productId ? `id-${productId}` : `name-${productName}`;
+                        
+                        // Solo mantener el primer producto con esta clave única
+                        return index === self.findIndex(p => {
+                            const pId = p.id || p.product_id || p.ID || p.Id;
+                            const pName = p.Product_Name || p.name || p.product_name || '';
+                            const pKey = pId ? `id-${pId}` : `name-${pName}`;
+                            return pKey === uniqueKey;
+                        });
+                    }).map((product, index) => {
+                        // Crear una clave única y estable para cada producto
+                        const productId = product.id || product.product_id || product.ID || product.Id;
+                        const productName = product.Product_Name || product.name || product.product_name || '';
+                        const uniqueKey = productId ? `product-${productId}` : `product-name-${productName}-${index}`;
+                        
+                        return (
+                        <div className='card card-product-carousel' key={uniqueKey} style={{
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'space-between',
@@ -153,7 +246,8 @@ const SectionProducts = () => {
                                 </div>
                             </div>
                         </div>
-                    ))}
+                        );
+                    })}
                 </Carousel>
             </div>
         </>
