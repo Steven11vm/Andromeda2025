@@ -29,7 +29,7 @@ export default function Component() {
     const [searchTerm, setSearchTerm] = useState('');
     const [services, setServices] = useState([]);
     const [minTime, setMinTime] = useState("07:00");
-    const [maxTime, setMaxTime] = useState("21:00");
+    const [maxTime, setMaxTime] = useState("22:00");
     const [timeSlots, setTimeSlots] = useState([]);
     const [prevState, setPrevState] = useState([]);
 
@@ -208,10 +208,19 @@ export default function Component() {
     };
 
     const updateOccupiedSlots = (appointmentsData) => {
-        const occupied = appointmentsData.map(appointment => ({
-            startTime: appointment.Init_Time,
-            endTime: appointment.Finish_Time
-        }));
+        const userId = localStorage.getItem('userId');
+        // Filtrar solo las citas del cliente logueado y las de la fecha seleccionada
+        const occupied = appointmentsData
+            .filter(appointment => {
+                const isSameDate = appointment.Date === currentDate;
+                const isSameClient = appointment.clienteId && appointment.clienteId.toString() === userId?.toString();
+                return isSameDate && isSameClient;
+            })
+            .map(appointment => ({
+                startTime: appointment.Init_Time,
+                endTime: appointment.Finish_Time,
+                date: appointment.Date
+            }));
         setOccupiedSlots(occupied);
     };
 
@@ -227,6 +236,20 @@ export default function Component() {
     useEffect(() => {
         setTimeSlots(generateTimeSlots());
     }, [minTime, maxTime]);
+
+    useEffect(() => {
+        // Sincronizar currentDate con la fecha del formulario al inicio
+        if (saleInfo.appointmentData.Date && saleInfo.appointmentData.Date !== currentDate) {
+            setCurrentDate(saleInfo.appointmentData.Date);
+        }
+    }, [saleInfo.appointmentData.Date]);
+
+    useEffect(() => {
+        // Actualizar slots ocupados cuando cambia la fecha o las citas
+        if (appointments.length > 0) {
+            updateOccupiedSlots(appointments);
+        }
+    }, [currentDate, appointments]);
 
     const addProduct = (product) => {
         const existingProduct = selectedProducts.find(p => p.id === product.id);
@@ -268,10 +291,10 @@ export default function Component() {
         }
 
         const startTime = parseInt(saleInfo.appointmentData.Init_Time.split(':')[0]);
-        if (startTime < 7 || startTime >= 21) {
+        if (startTime < 7 || startTime > 22) {
             return {
                 isValid: false,
-                message: 'Las citas solo se pueden agendar entre las 7:00 AM y las 9:00 PM'
+                message: 'Las citas solo se pueden agendar entre las 7:00 AM y las 10:00 PM'
             };
         }
 
@@ -279,10 +302,18 @@ export default function Component() {
     };
 
     const validateAppointmentAvailability = () => {
+        const userId = localStorage.getItem('userId');
         const newAppointmentStart = new Date(saleInfo.appointmentData.Date + 'T' + saleInfo.appointmentData.Init_Time);
         const newAppointmentEnd = new Date(saleInfo.appointmentData.Date + 'T' + saleInfo.appointmentData.Finish_Time);
 
-        for (const appointment of appointments) {
+        // Filtrar solo las citas del mismo cliente y la misma fecha
+        const clientAppointments = appointments.filter(appointment => {
+            const isSameDate = appointment.Date === saleInfo.appointmentData.Date;
+            const isSameClient = appointment.clienteId && appointment.clienteId.toString() === userId?.toString();
+            return isSameDate && isSameClient;
+        });
+
+        for (const appointment of clientAppointments) {
             const existingStart = new Date(appointment.Date + 'T' + appointment.Init_Time);
             const existingEnd = new Date(appointment.Date + 'T' + appointment.Finish_Time);
 
@@ -293,7 +324,7 @@ export default function Component() {
             ) {
                 return {
                     isValid: false,
-                    message: 'El horario seleccionado ya está ocupado por otra cita'
+                    message: 'Ya tienes una cita registrada a esta misma hora. Por favor, selecciona otra hora.'
                 };
             }
         }
@@ -405,6 +436,10 @@ export default function Component() {
                 [name]: value
             }
         }));
+
+        if (name === 'Date') {
+            setCurrentDate(value);
+        }
 
         if (name === 'Init_Time') {
             updateFinishTime(value, saleInfo.appointmentData.time_appointment);
@@ -825,370 +860,373 @@ export default function Component() {
     return (
         <>
             <Header />
-            <br /><br /><br /><br />
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className='container mt-5'
-            >
-                <div className='row'>
-                    {/* Columna de Servicios y Productos */}
-                    <div className='col-md-6'>
-                        <br /><br /><br /><br />
-                        <motion.div
-                            className='card mb-4 shadow-lg'
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ type: 'spring', stiffness: 300 }}
-                        >
-                            <div className="card-header" style={{ backgroundColor: '#000000', color: 'white', display: 'flex', alignItems: 'center' }}>
-                                <Scissors className="mr-2" />
-                                <h5 className="mb-0">SERVCIOS Y PRODUCTOS</h5>
-
-                            </div>
-
-                            <div className='card-body'>
-                                {/* Servicios */}
-                                <h6 className="mb-3 font-weight-bold text-secondary">Servicios</h6>
-                                <Table responsive bordered hover className="shadow-sm">
-                                    <thead style={{ backgroundColor: '#f5f5f5' }}>
-                                        <tr>
-                                            <th>Servicio</th>
-                                            <th>Barbero</th>
-                                            <th>Duración</th>
-                                            <th>Precio</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {saleInfo.saleDetails
-                                            .filter(detail => detail.serviceId !== null || (detail.id_producto === null && detail.empleadoId === null))
-                                            .map((detail, index) => (
-                                                <motion.tr
-                                                    key={index}
-                                                    initial={{ opacity: 0, y: -20 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ delay: index * 0.1 }}
-                                                >
-                                                    <td>
-                                                        <Form.Select
-                                                            value={detail.serviceId || ''}
-                                                            onChange={(e) => handleServiceChange(index, 'serviceId', e.target.value)}
-                                                            className="form-control-sm"
-                                                        >
-                                                            <option value="">Seleccione un servicio</option>
-                                                            {services.map(service => (
-                                                                <option key={service.id} value={service.id}>{service.name}</option>
-                                                            ))}
-                                                        </Form.Select>
-                                                    </td>
-                                                    <td>
-                                                        <Form.Select
-                                                            value={detail.empleadoId || ''}
-                                                            onChange={(e) => handleServiceChange(index, 'empleadoId', e.target.value)}
-                                                            className="form-control-sm"
-                                                        >
-                                                            <option value="">Seleccione el barbero</option>
-                                                            {users.filter(user => user.roleId === 2).map(employee => (
-                                                                <option key={employee.id} value={employee.id}>{employee.name}</option>
-                                                            ))}
-                                                        </Form.Select>
-                                                    </td>
-                                                    <td>{detail.serviceId ? formatDuration(services.find(s => s.id === parseInt(detail.serviceId))?.time || 0) : '-'}</td>
-                                                    <td>{detail.serviceId ? `$${services.find(s => s.id === parseInt(detail.serviceId))?.price.toFixed(2)}` : '-'}</td>
-                                                    <td>
-                                                        <Button
-                                                            size="sm"
-                                                            onClick={() => handleServiceRemove(index)}
-                                                            className="d-flex align-items-center justify-content-center"
-                                                            style={{ backgroundColor: '#b22222', color: 'white' }}
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </Button>
-                                                    </td>
-                                                </motion.tr>
-                                            ))}
-                                    </tbody>
-                                </Table>
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="btn mt-3 d-flex align-items-center"
-                                    style={{ backgroundColor: '#d4af37', color: 'white' }}
-                                    onClick={handleServiceAdd}
-                                >
-                                    <Plus size={16} className="mr-2" />
-                                    Agregar Servicio
-                                </motion.button>
-
-                                {/* Productos */}
-                                <h6 className="mt-4 mb-3 font-weight-bold text-secondary">Productos</h6>
-                                <Form.Group className="mb-3">
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Buscar productos..."
-                                        value={searchTerm}
-                                        onChange={handleProductSearch}
-                                        className="form-control-sm"
-                                    />
-                                </Form.Group>
-                                {searchTerm && (
-                                    <motion.div
-                                        className="mb-3 border p-2 rounded shadow-sm"
-                                        style={{ backgroundColor: '#f5f5f5' }}
-                                        initial={{ opacity: 0, y: -20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                    >
-                                        {filteredProducts
-                                            .filter(product => product.Stock >= 1) // Filtrar productos con stock >= 1
-                                            .map(product => (
-                                                <motion.div
-                                                    key={product.id}
-                                                    className="p-2 border-bottom cursor-pointer hover:bg-light"
-                                                    onClick={() => addProduct(product)}
-                                                    whileHover={{ scale: 1.02 }}
-                                                >
-                                                    {product.Product_Name}
-                                                </motion.div>
-                                            ))}
-                                    </motion.div>
-
-                                )}
-                                <Table responsive bordered hover className="shadow-sm">
-                                    <thead style={{ backgroundColor: '#f5f5f5' }}>
-                                        <tr>
-                                            <th>Producto</th>
-                                            <th>Cantidad</th>
-                                            <th>Imagen</th>
-                                            <th>Precio unitario</th>
-                                            <th>Subtotal</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {selectedProducts.map(product => (
-                                            <motion.tr
-                                                key={product.id}
-                                                initial={{ opacity: 0, y: -20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                            >
-                                                <td>{product.Product_Name}</td>
-                                                <td>{product.quantity}</td>
-                                                <td className="p-2 text-center">
-                                                    {product.Image ? (
-                                                        <div className="inline-block">
-                                                            <img
-                                                                src={product.Image}
-                                                                alt={product.Product_Name}
-                                                                className="w-[50px] h-[50px] object-cover rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100"
-                                                                style={{
-                                                                    width: '50px',
-                                                                    height: '50px',
-                                                                    objectFit: 'cover'
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    ) : (
-                                                        <div className="w-[50px] h-[50px] inline-flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 border border-gray-100">
-                                                            <span className="text-sm">No</span>
-                                                        </div>
-                                                    )}
-                                                </td>
-                                                <td>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.Price)}</td>
-                                                <td>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.Price * product.quantity)}</td>
-                                                <td>
-                                                    <div className="d-flex">
-                                                        <Button
-                                                            size="sm"
-                                                            onClick={() => removeProduct(product.id)}
-                                                            className="d-flex align-items-center justify-content-center"
-                                                            style={{ backgroundColor: '#b22222', color: 'white' }}
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            onClick={() => updateQuantity(product.id, 1)}
-                                                            className="mr-1"
-                                                            style={{ backgroundColor: '#d4af37', color: 'white' }}
-                                                        >
-                                                            <Plus size={16} />
-                                                        </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            onClick={() => updateQuantity(product.id, -1)}
-                                                            style={{ backgroundColor: '#a9a9a9', color: 'white' }}
-                                                        >
-                                                            <Minus size={16} />
-                                                        </Button>
-                                                    </div>
-                                                </td>
-                                            </motion.tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
-                            </div>
-                        </motion.div>
-
-
-
-
-
-                    </div >
-
-                    {/* Columna de Información de Cita */}
-                    <div className='col-md-6'>
-                        <br /><br /><br /><br />
-                        <motion.div
-                            className='card mb-4 shadow-lg'
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ type: 'spring', stiffness: 300 }}
-                        >
-                            <div className="card-header" style={{ backgroundColor: '#000000', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <Calendar className="mr-2" />
-                                    <h5 className="mb-0">INFORMACION DE LA CITA </h5>
+            <div style={{ paddingTop: '100px', minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+                <div className='container py-4'>
+                    <div className='row g-4'>
+                        {/* Columna de Servicios y Productos */}
+                        <div className='col-md-6'>
+                            <div className='card border-0 shadow-sm mb-4' style={{ borderRadius: '12px' }}>
+                                <div className="card-header border-0" style={{ 
+                                    backgroundColor: '#2c3e50', 
+                                    color: 'white', 
+                                    borderRadius: '12px 12px 0 0',
+                                    padding: '20px'
+                                }}>
+                                    <h5 className="mb-0 d-flex align-items-center">
+                                        <Scissors size={20} className="me-2" />
+                                        Servicios y Productos
+                                    </h5>
                                 </div>
-                                <IoRefreshSharp
-                                    size={20}
-                                    style={{ cursor: 'pointer', color: 'white' }}
-                                    title="Reiniciar estados de la tabla"
-                                    onClick={resetTableStates}
-                                />
-                            </div>
-                            <div className='card-body'>
-                                <Form>
-                                    <Row>
-                                        <Col md={6}>
-                                            <Form.Group className="mb-3">
-                                                <Form.Label>Fecha de la cita</Form.Label>
-                                                <DatePicker
-                                                    selected={new Date(saleInfo.appointmentData.Date)}
-                                                    onChange={(date) =>
-                                                        handleAppointmentChange({
-                                                            target: { name: "Date", value: date.toISOString().split("T")[0] },
-                                                        })
-                                                    }
-                                                    className="form-control form-control-sm"
-                                                    minDate={new Date(new Date().setHours(0, 0, 0, 0))}
-                                                    popperPlacement={isSmallScreen ? "bottom" : "left-end"} // Usando el estado de pantalla pequeña
-                                                    locale={es}
-                                                    popperClassName="datepicker-zindex"
-                                                    popperModifiers={{
-                                                        offset: {
-                                                            enabled: true,
-                                                            offset: "0, 5",
-                                                        },
-                                                        preventOverflow: {
-                                                            enabled: true,
-                                                            boundariesElement: "viewport",
-                                                        },
-                                                    }}
-                                                    filterDate={(date) => date.getDay() !== 1}
-                                                />
-                                            </Form.Group>
 
-
-
-                                        </Col>
-                                        <Col md={6}>
-                                            <Form.Group className="mb-3">
-                                                <Form.Label>Hora de la cita</Form.Label>
-                                                <CustomTimeSelector
-                                                    name="Init_Time"
-                                                    value={saleInfo.appointmentData.Init_Time}
-                                                    onChange={(time) => handleAppointmentChange({
-                                                        target: { name: 'Init_Time', value: time }
-                                                    })}
-                                                    className="form-control form-control-sm"
-                                                />
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col md={6}>
-                                            <Form.Group className="mb-3">
-                                                <Form.Label>Hora fin de la cita (estimada)</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name="Finish_Time"
-                                                    value={saleInfo.appointmentData.Finish_Time}
-                                                    readOnly
-                                                    className="form-control-sm"
-                                                />
-                                            </Form.Group>
-                                        </Col>
-                                        <Col md={6}>
-                                            <Form.Group className="mb-3">
-                                                <Form.Label>Duración total</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    value={formatDuration(saleInfo.appointmentData.time_appointment)}
-                                                    readOnly
-                                                    className="form-control-sm"
-                                                />
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                </Form>
-                            </div>
-                        </motion.div>
-                        <motion.div
-                            className='card mb-4 shadow-lg'
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ type: 'spring', stiffness: 300 }}
-                        >
-                            <div className="card-header" style={{ backgroundColor: '#000000', color: 'white', display: 'flex', alignItems: 'center' }}>
-                                <h5 className="mb-0">RESUMEN DE LA CITA </h5>
-                            </div>
-                            <div className='card-body'>
-                                <h6>Subtotal Servicios: {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(subtotalServices)}</h6>
-                                <h6>Subtotal Productos: {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(subtotalProducts)}</h6>
-                                <h6>Total: {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(saleInfo.total_price)}</h6>
-                                <div className="d-flex justify-content-end">
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="btn btn-secondary mr-2 d-flex align-items-center"
-                                        onClick={() => (window.location.href = '/appointmentView')}
-                                        style={{
-                                            minWidth: '150px',
-                                            padding: '10px 20px',
-                                            fontSize: '16px',
-                                            fontWeight: 'bold',
+                                <div className='card-body p-4'>
+                                    {/* Servicios */}
+                                    <h6 className="mb-3 fw-bold" style={{ color: '#495057' }}>Servicios</h6>
+                                    <div className="table-responsive">
+                                        <Table responsive className="mb-0" style={{ fontSize: '0.9rem' }}>
+                                            <thead style={{ backgroundColor: '#f8f9fa' }}>
+                                                <tr>
+                                                    <th style={{ fontWeight: '600', fontSize: '0.85rem' }}>Servicio</th>
+                                                    <th style={{ fontWeight: '600', fontSize: '0.85rem' }}>Barbero</th>
+                                                    <th style={{ fontWeight: '600', fontSize: '0.85rem' }}>Duración</th>
+                                                    <th style={{ fontWeight: '600', fontSize: '0.85rem' }}>Precio</th>
+                                                    <th style={{ fontWeight: '600', fontSize: '0.85rem', width: '80px' }}>Acción</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {saleInfo.saleDetails
+                                                    .filter(detail => detail.serviceId !== null || (detail.id_producto === null && detail.empleadoId === null))
+                                                    .map((detail, index) => (
+                                                        <tr key={index} style={{ borderBottom: '1px solid #e9ecef' }}>
+                                                            <td>
+                                                                <Form.Select
+                                                                    value={detail.serviceId || ''}
+                                                                    onChange={(e) => handleServiceChange(index, 'serviceId', e.target.value)}
+                                                                    className="form-select form-select-sm"
+                                                                    style={{ border: '1px solid #ced4da', borderRadius: '6px' }}
+                                                                >
+                                                                    <option value="">Seleccione...</option>
+                                                                    {services.map(service => (
+                                                                        <option key={service.id} value={service.id}>{service.name}</option>
+                                                                    ))}
+                                                                </Form.Select>
+                                                            </td>
+                                                            <td>
+                                                                <Form.Select
+                                                                    value={detail.empleadoId || ''}
+                                                                    onChange={(e) => handleServiceChange(index, 'empleadoId', e.target.value)}
+                                                                    className="form-select form-select-sm"
+                                                                    style={{ border: '1px solid #ced4da', borderRadius: '6px' }}
+                                                                >
+                                                                    <option value="">Seleccione...</option>
+                                                                    {users.filter(user => user.roleId === 2).map(employee => (
+                                                                        <option key={employee.id} value={employee.id}>{employee.name}</option>
+                                                                    ))}
+                                                                </Form.Select>
+                                                            </td>
+                                                            <td className="text-muted">{detail.serviceId ? formatDuration(services.find(s => s.id === parseInt(detail.serviceId))?.time || 0) : '-'}</td>
+                                                            <td className="fw-semibold">{detail.serviceId ? `$${services.find(s => s.id === parseInt(detail.serviceId))?.price.toFixed(2)}` : '-'}</td>
+                                                            <td>
+                                                                <Button
+                                                                    size="sm"
+                                                                    onClick={() => handleServiceRemove(index)}
+                                                                    variant="outline-danger"
+                                                                    className="p-1"
+                                                                    style={{ border: 'none', minWidth: '32px' }}
+                                                                    title="Eliminar servicio"
+                                                                >
+                                                                    <Trash2 size={14} />
+                                                                </Button>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                    <button
+                                        className="btn w-100 mt-3 d-flex align-items-center justify-content-center"
+                                        style={{ 
+                                            backgroundColor: '#3498db', 
                                             color: 'white',
-                                            borderRadius: 20,
-                                            backgroundColor: '#6c757d',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            padding: '10px',
+                                            fontWeight: '500',
+                                            transition: 'all 0.2s'
                                         }}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#2980b9'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#3498db'}
+                                        onClick={handleServiceAdd}
                                     >
-                                        <X size={20} className="mr-2" />
-                                        Cancelar
-                                    </motion.button>
+                                        <Plus size={18} className="me-2" />
+                                        Agregar Servicio
+                                    </button>
 
-
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={handleSubmit}
-                                        style={{
-                                            minWidth: '150px',
-                                            padding: '10px 20px',
-                                            fontSize: '16px',
-                                            fontWeight: 'bold',
-                                            color: '#212529',
-                                            borderRadius: 20,
-                                            backgroundColor: '#d4af37', color: 'white',
-                                        }}
-                                    >
-                                        <Save size={20} className="mr-2" />
-                                        Guardar Cita
-                                    </motion.button>
+                                    {/* Productos */}
+                                    <h6 className="mt-4 mb-3 fw-bold" style={{ color: '#495057' }}>Productos</h6>
+                                    <Form.Group className="mb-3">
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Buscar productos..."
+                                            value={searchTerm}
+                                            onChange={handleProductSearch}
+                                            className="form-control"
+                                            style={{ borderRadius: '8px', border: '1px solid #ced4da' }}
+                                        />
+                                    </Form.Group>
+                                    {searchTerm && (
+                                        <div className="mb-3 border rounded p-2" style={{ backgroundColor: '#fff', maxHeight: '200px', overflowY: 'auto' }}>
+                                            {filteredProducts
+                                                .filter(product => product.Stock >= 1)
+                                                .map(product => (
+                                                    <div
+                                                        key={product.id}
+                                                        className="p-2 border-bottom"
+                                                        onClick={() => addProduct(product)}
+                                                        style={{ cursor: 'pointer', transition: 'background 0.2s' }}
+                                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
+                                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                                                    >
+                                                        {product.Product_Name}
+                                                    </div>
+                                                ))}
+                                        </div>
+                                    )}
+                                    {selectedProducts.length > 0 && (
+                                        <div className="table-responsive">
+                                            <Table responsive className="mb-0" style={{ fontSize: '0.9rem' }}>
+                                                <thead style={{ backgroundColor: '#f8f9fa' }}>
+                                                    <tr>
+                                                        <th style={{ fontWeight: '600', fontSize: '0.85rem' }}>Producto</th>
+                                                        <th style={{ fontWeight: '600', fontSize: '0.85rem' }}>Cantidad</th>
+                                                        <th style={{ fontWeight: '600', fontSize: '0.85rem' }}>Precio</th>
+                                                        <th style={{ fontWeight: '600', fontSize: '0.85rem' }}>Subtotal</th>
+                                                        <th style={{ fontWeight: '600', fontSize: '0.85rem', width: '120px' }}>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {selectedProducts.map(product => (
+                                                        <tr key={product.id} style={{ borderBottom: '1px solid #e9ecef' }}>
+                                                            <td>{product.Product_Name}</td>
+                                                            <td className="fw-semibold">{product.quantity}</td>
+                                                            <td className="text-muted">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.Price)}</td>
+                                                            <td className="fw-semibold">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.Price * product.quantity)}</td>
+                                                            <td>
+                                                                <div className="d-flex gap-1">
+                                                                    <Button
+                                                                        size="sm"
+                                                                        onClick={() => updateQuantity(product.id, 1)}
+                                                                        variant="outline-primary"
+                                                                        className="p-1"
+                                                                        style={{ border: 'none', minWidth: '28px' }}
+                                                                        title="Aumentar cantidad"
+                                                                    >
+                                                                        <Plus size={14} />
+                                                                    </Button>
+                                                                    <Button
+                                                                        size="sm"
+                                                                        onClick={() => updateQuantity(product.id, -1)}
+                                                                        variant="outline-secondary"
+                                                                        className="p-1"
+                                                                        style={{ border: 'none', minWidth: '28px' }}
+                                                                        title="Disminuir cantidad"
+                                                                    >
+                                                                        <Minus size={14} />
+                                                                    </Button>
+                                                                    <Button
+                                                                        size="sm"
+                                                                        onClick={() => removeProduct(product.id)}
+                                                                        variant="outline-danger"
+                                                                        className="p-1"
+                                                                        style={{ border: 'none', minWidth: '28px' }}
+                                                                        title="Eliminar producto"
+                                                                    >
+                                                                        <Trash2 size={14} />
+                                                                    </Button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </Table>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                        </motion.div>
+
+
+
+
+
                     </div >
-                </div >
-            </motion.div >
+
+                        {/* Columna de Información de Cita */}
+                        <div className='col-md-6'>
+                            <div className='card border-0 shadow-sm mb-4' style={{ borderRadius: '12px' }}>
+                                <div className="card-header border-0 d-flex justify-content-between align-items-center" style={{ 
+                                    backgroundColor: '#2c3e50', 
+                                    color: 'white', 
+                                    borderRadius: '12px 12px 0 0',
+                                    padding: '20px'
+                                }}>
+                                    <h5 className="mb-0 d-flex align-items-center">
+                                        <Calendar size={20} className="me-2" />
+                                        Información de la Cita
+                                    </h5>
+                                    <IoRefreshSharp
+                                        size={18}
+                                        style={{ cursor: 'pointer', opacity: 0.8 }}
+                                        title="Reiniciar formulario"
+                                        onClick={resetTableStates}
+                                        onMouseEnter={(e) => e.target.style.opacity = '1'}
+                                        onMouseLeave={(e) => e.target.style.opacity = '0.8'}
+                                    />
+                                </div>
+                                <div className='card-body p-4'>
+                                    <Form>
+                                        <Row className="g-3">
+                                            <Col md={12}>
+                                                <Form.Group>
+                                                    <Form.Label className="fw-semibold mb-2">Fecha de la cita</Form.Label>
+                                                    <DatePicker
+                                                        selected={new Date(saleInfo.appointmentData.Date)}
+                                                        onChange={(date) => {
+                                                            const dateStr = date.toISOString().split("T")[0];
+                                                            setCurrentDate(dateStr);
+                                                            handleAppointmentChange({
+                                                                target: { name: "Date", value: dateStr },
+                                                            });
+                                                        }}
+                                                        className="form-control"
+                                                        minDate={new Date(new Date().setHours(0, 0, 0, 0))}
+                                                        popperPlacement={isSmallScreen ? "bottom" : "left-end"}
+                                                        locale={es}
+                                                        popperClassName="datepicker-zindex"
+                                                        popperModifiers={{
+                                                            offset: { enabled: true, offset: "0, 5" },
+                                                            preventOverflow: { enabled: true, boundariesElement: "viewport" },
+                                                        }}
+                                                        filterDate={(date) => date.getDay() !== 1}
+                                                        style={{ borderRadius: '8px' }}
+                                                    />
+                                                </Form.Group>
+                                            </Col>
+                                            <Col md={12}>
+                                                <Form.Group>
+                                                    <Form.Label className="fw-semibold mb-2">Hora de la cita</Form.Label>
+                                                    <CustomTimeSelector
+                                                        name="Init_Time"
+                                                        value={saleInfo.appointmentData.Init_Time}
+                                                        onChange={(time) => handleAppointmentChange({
+                                                            target: { name: 'Init_Time', value: time }
+                                                        })}
+                                                        occupiedSlots={occupiedSlots}
+                                                        selectedDate={saleInfo.appointmentData.Date}
+                                                    />
+                                                    {occupiedSlots.length > 0 && (
+                                                        <Form.Text className="text-muted d-block mt-2" style={{ fontSize: '0.85rem' }}>
+                                                            <span style={{ color: '#dc3545' }}>⚠️</span> Las horas en rojo ya están ocupadas
+                                                        </Form.Text>
+                                                    )}
+                                                </Form.Group>
+                                            </Col>
+                                            <Col md={6}>
+                                                <Form.Group>
+                                                    <Form.Label className="fw-semibold mb-2">Hora fin (estimada)</Form.Label>
+                                                    <Form.Control
+                                                        type="text"
+                                                        value={saleInfo.appointmentData.Finish_Time || '-'}
+                                                        readOnly
+                                                        className="form-control"
+                                                        style={{ backgroundColor: '#f8f9fa', borderRadius: '8px' }}
+                                                    />
+                                                </Form.Group>
+                                            </Col>
+                                            <Col md={6}>
+                                                <Form.Group>
+                                                    <Form.Label className="fw-semibold mb-2">Duración total</Form.Label>
+                                                    <Form.Control
+                                                        type="text"
+                                                        value={formatDuration(saleInfo.appointmentData.time_appointment)}
+                                                        readOnly
+                                                        className="form-control"
+                                                        style={{ backgroundColor: '#f8f9fa', borderRadius: '8px' }}
+                                                    />
+                                                </Form.Group>
+                                            </Col>
+                                        </Row>
+                                    </Form>
+                                </div>
+                            </div>
+                            <div className='card border-0 shadow-sm' style={{ borderRadius: '12px' }}>
+                                <div className="card-header border-0" style={{ 
+                                    backgroundColor: '#27ae60', 
+                                    color: 'white', 
+                                    borderRadius: '12px 12px 0 0',
+                                    padding: '20px'
+                                }}>
+                                    <h5 className="mb-0">Resumen</h5>
+                                </div>
+                                <div className='card-body p-4'>
+                                    <div className="mb-3 pb-3 border-bottom">
+                                        <div className="d-flex justify-content-between mb-2">
+                                            <span className="text-muted">Subtotal Servicios:</span>
+                                            <span className="fw-semibold">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(subtotalServices)}</span>
+                                        </div>
+                                        <div className="d-flex justify-content-between mb-2">
+                                            <span className="text-muted">Subtotal Productos:</span>
+                                            <span className="fw-semibold">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(subtotalProducts)}</span>
+                                        </div>
+                                    </div>
+                                    <div className="d-flex justify-content-between mb-4">
+                                        <span className="fw-bold fs-5">Total:</span>
+                                        <span className="fw-bold fs-5" style={{ color: '#27ae60' }}>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(saleInfo.total_price)}</span>
+                                    </div>
+                                    <div className="d-flex gap-2">
+                                        <button
+                                            className="btn flex-fill d-flex align-items-center justify-content-center"
+                                            onClick={() => navigate('/appointmentView')}
+                                            style={{
+                                                padding: '12px',
+                                                fontSize: '16px',
+                                                fontWeight: '500',
+                                                borderRadius: '8px',
+                                                backgroundColor: '#95a5a6',
+                                                color: 'white',
+                                                border: 'none',
+                                                transition: 'all 0.2s'
+                                            }}
+                                            onMouseEnter={(e) => e.target.style.backgroundColor = '#7f8c8d'}
+                                            onMouseLeave={(e) => e.target.style.backgroundColor = '#95a5a6'}
+                                        >
+                                            <X size={18} className="me-2" />
+                                            Cancelar
+                                        </button>
+                                        <button
+                                            className="btn flex-fill d-flex align-items-center justify-content-center"
+                                            onClick={handleSubmit}
+                                            style={{
+                                                padding: '12px',
+                                                fontSize: '16px',
+                                                fontWeight: '500',
+                                                borderRadius: '8px',
+                                                backgroundColor: '#27ae60',
+                                                color: 'white',
+                                                border: 'none',
+                                                transition: 'all 0.2s'
+                                            }}
+                                            onMouseEnter={(e) => e.target.style.backgroundColor = '#229954'}
+                                            onMouseLeave={(e) => e.target.style.backgroundColor = '#27ae60'}
+                                        >
+                                            <Save size={18} className="me-2" />
+                                            Guardar Cita
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
         </>

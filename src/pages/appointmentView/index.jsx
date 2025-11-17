@@ -475,43 +475,71 @@ export default function CalendarioBarberia({ info }) {
   };
 
   const EventComponent = ({ info }) => {
-    const [isClicked, setIsClicked] = useState(false);
-
-    const handleClick = () => {
-      setIsClicked(!isClicked);
-    };
-
-    const handleViewClickWrapper = () => {
-      handleViewClick(info);
-    };
-
-    // Obtener información de la cita para mostrar
     const appointmentStatus = info.event.extendedProps?.status || 'Pendiente';
     const appointmentTime = info.event.extendedProps?.Init_Time || '';
     
+    // Colores según el estado
+    const getStatusColor = (status) => {
+      switch(status?.toLowerCase()) {
+        case 'completada':
+          return '#27ae60';
+        case 'cancelada':
+          return '#e74c3c';
+        case 'pendiente':
+          return '#f39c12';
+        default:
+          return '#3498db';
+      }
+    };
+
+    const statusColor = getStatusColor(appointmentStatus);
+    
     return (
       <div
-        className='programming-content'
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
-        onClick={handleClick}
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          padding: '4px 8px',
+          borderRadius: '6px',
+          backgroundColor: `${statusColor}15`,
+          border: `1px solid ${statusColor}40`,
+          cursor: 'pointer',
+          transition: 'all 0.2s ease'
+        }}
+        onClick={() => handleViewClick(info)}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = `${statusColor}25`;
+          e.currentTarget.style.transform = 'scale(1.02)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = `${statusColor}15`;
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
       >
-        <span className='span-programming'>
-          {appointmentStatus} - {appointmentTime}
-        </span>
-        {isClicked && (
-          <Button
-            onClick={handleViewClickWrapper}
-            style={{
-              backgroundColor: "transparent",
-              border: "none",
-              cursor: "pointer",
-              padding: 0,
-              marginLeft: '8px'
-            }}
-          >
-            <FaEye size={20} color="#000000" />
-          </Button>
-        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1 }}>
+          <div style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: statusColor
+          }} />
+          <span style={{ 
+            fontSize: '0.85rem', 
+            fontWeight: '500',
+            color: '#2c3e50'
+          }}>
+            {appointmentTime}
+          </span>
+        </div>
+        <FaEye 
+          size={14} 
+          style={{ color: statusColor, cursor: 'pointer' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleViewClick(info);
+          }}
+        />
       </div>
     );
   };
@@ -675,70 +703,240 @@ export default function CalendarioBarberia({ info }) {
                 </div>
             </div>
         </header>
-      <br /><br /><br /><br /><br />
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-[#1a1a1a] rounded-xl shadow-2xl overflow-hidden border border-[#b89b58]/20">
-          <div className="logo-container">
-            <Form.Select
-              value={selectedView}
-              onChange={(e) => handleViewChange(e.target.value)}
-              className="view-selector"
+      <div style={{ paddingTop: '100px', minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+        <div className="container py-5">
+          {/* Header Section */}
+          <div className="text-center mb-5">
+            <h1 style={{ 
+              fontSize: '2.5rem', 
+              fontWeight: '700', 
+              color: '#2c3e50',
+              marginBottom: '0.5rem'
+            }}>
+              Mis Citas
+            </h1>
+            <p style={{ color: '#6c757d', fontSize: '1.1rem' }}>
+              Gestiona y programa tus citas de manera fácil
+            </p>
+          </div>
+
+          {/* Action Button */}
+          <div className="d-flex justify-content-center mb-4">
+            <Button
+              variant="contained"
+              onClick={() => navigate('/registerview')}
               style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23b89b58'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                backgroundPosition: "right 0.5rem center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "1.5em 1.5em",
-                paddingRight: "2.5rem",
+                backgroundColor: '#27ae60',
+                color: 'white',
+                fontWeight: '600',
+                padding: '14px 32px',
+                fontSize: '18px',
+                borderRadius: '12px',
+                textTransform: 'none',
+                boxShadow: '0 4px 12px rgba(39, 174, 96, 0.3)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#229954';
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 6px 16px rgba(39, 174, 96, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#27ae60';
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 4px 12px rgba(39, 174, 96, 0.3)';
               }}
             >
-              <option value="dayGridMonth" className="view-selector-option">
-                Mes
-              </option>
-              <option value="timeGridWeek" className="view-selector-option">
-                Semana
-              </option>
-              <option value="timeGridDay" className="view-selector-option">
-                Día
-              </option>
-            </Form.Select>
+              <Calendar size={20} style={{ marginRight: '8px', marginBottom: '2px' }} />
+              Crear Nueva Cita
+            </Button>
           </div>
 
-          <div className="table-responsive mt-3">
-            {filteredEvents.length === 0 ? (
-              <div style={{ 
-                padding: '3rem', 
-                textAlign: 'center', 
-                color: '#b89b58',
-                backgroundColor: '#1a1a1a',
-                borderRadius: '10px',
-                margin: '2rem 0'
-              }}>
-                <h4>No tienes citas reservadas</h4>
-                <p style={{ marginTop: '1rem', color: '#ffffff' }}>
-                  Haz clic en una fecha del calendario o ve a la página de registro para crear una nueva cita.
-                </p>
-              </div>
-            ) : (
-              <FullCalendar
-                ref={calendarRef}
-                locale={esLocale}
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                events={filteredEvents}
-                initialView={selectedView}
-                dateClick={handleDateClick}
-                eventContent={(info) => <EventComponent info={info} />}
-                locales={[esLocale]}
-                headerToolbar={{
-                  left: "prev,next today",
-                  center: "title",
-                  right: "",
+          {/* Calendar Container */}
+          <div className="card border-0 shadow-sm" style={{ borderRadius: '16px', overflow: 'hidden' }}>
+            {/* Calendar Header */}
+            <div style={{ 
+              backgroundColor: '#2c3e50', 
+              padding: '20px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '15px'
+            }}>
+              <h3 style={{ color: 'white', margin: 0, fontSize: '1.5rem', fontWeight: '600' }}>
+                Calendario
+              </h3>
+              <Form.Select
+                value={selectedView}
+                onChange={(e) => handleViewChange(e.target.value)}
+                style={{
+                  backgroundColor: 'white',
+                  color: '#2c3e50',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '8px 40px 8px 16px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  minWidth: '150px'
                 }}
-              />
-            )}
-          </div>
-        </div>
+              >
+                <option value="dayGridMonth">Vista Mensual</option>
+                <option value="timeGridWeek">Vista Semanal</option>
+                <option value="timeGridDay">Vista Diaria</option>
+              </Form.Select>
+            </div>
 
-        <Modal
+            {/* Calendar Content */}
+            <div style={{ padding: '20px', backgroundColor: 'white' }}>
+              {filteredEvents.length === 0 ? (
+                <div style={{ 
+                  padding: '4rem 2rem', 
+                  textAlign: 'center',
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '12px',
+                  border: '2px dashed #dee2e6'
+                }}>
+                  <Calendar size={64} style={{ color: '#95a5a6', marginBottom: '1.5rem' }} />
+                  <h4 style={{ color: '#2c3e50', marginBottom: '1rem', fontWeight: '600' }}>
+                    No tienes citas programadas
+                  </h4>
+                  <p style={{ color: '#6c757d', marginBottom: '2rem', fontSize: '1.05rem' }}>
+                    ¡Comienza ahora! Haz clic en el botón de arriba o selecciona una fecha en el calendario para crear tu primera cita.
+                  </p>
+                  <Button
+                    variant="outlined"
+                    onClick={() => navigate('/registerview')}
+                    style={{
+                      borderColor: '#27ae60',
+                      color: '#27ae60',
+                      fontWeight: '600',
+                      padding: '10px 24px',
+                      borderRadius: '8px',
+                      textTransform: 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#27ae60';
+                      e.target.style.color = 'white';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#27ae60';
+                    }}
+                  >
+                    Programar Mi Primera Cita
+                  </Button>
+                </div>
+              ) : (
+                <div style={{ borderRadius: '8px', overflow: 'hidden' }}>
+                  <FullCalendar
+                    ref={calendarRef}
+                    locale={esLocale}
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                    events={filteredEvents}
+                    initialView={selectedView}
+                    dateClick={handleDateClick}
+                    eventContent={(info) => <EventComponent info={info} />}
+                    locales={[esLocale]}
+                    headerToolbar={{
+                      left: "prev,next today",
+                      center: "title",
+                      right: "",
+                    }}
+                    height="auto"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Quick Info Cards */}
+          {filteredEvents.length > 0 && (
+            <div className="row g-3 mt-4">
+              <div className="col-md-4">
+                <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', padding: '20px' }}>
+                  <div className="d-flex align-items-center">
+                    <div style={{
+                      width: '48px',
+                      height: '48px',
+                      borderRadius: '12px',
+                      backgroundColor: '#e8f5e9',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: '15px'
+                    }}>
+                      <CheckCircle2 size={24} style={{ color: '#27ae60' }} />
+                    </div>
+                    <div>
+                      <h5 style={{ margin: 0, color: '#2c3e50', fontSize: '1.1rem' }}>
+                        {filteredEvents.length}
+                      </h5>
+                      <p style={{ margin: 0, color: '#6c757d', fontSize: '0.9rem' }}>
+                        Citas Programadas
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', padding: '20px' }}>
+                  <div className="d-flex align-items-center">
+                    <div style={{
+                      width: '48px',
+                      height: '48px',
+                      borderRadius: '12px',
+                      backgroundColor: '#fff3e0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: '15px'
+                    }}>
+                      <Clock size={24} style={{ color: '#f39c12' }} />
+                    </div>
+                    <div>
+                      <h5 style={{ margin: 0, color: '#2c3e50', fontSize: '1.1rem' }}>
+                        Próxima
+                      </h5>
+                      <p style={{ margin: 0, color: '#6c757d', fontSize: '0.9rem' }}>
+                        {filteredEvents.length > 0 ? 'Ver calendario' : 'Sin citas'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', padding: '20px' }}>
+                  <div className="d-flex align-items-center">
+                    <div style={{
+                      width: '48px',
+                      height: '48px',
+                      borderRadius: '12px',
+                      backgroundColor: '#e3f2fd',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: '15px'
+                    }}>
+                      <DollarSign size={24} style={{ color: '#3498db' }} />
+                    </div>
+                    <div>
+                      <h5 style={{ margin: 0, color: '#2c3e50', fontSize: '1.1rem' }}>
+                        Total
+                      </h5>
+                      <p style={{ margin: 0, color: '#6c757d', fontSize: '0.9rem' }}>
+                        Ver detalles
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <Modal
           show={showDetailModal}
           onHide={() => setShowDetailModal(false)}
           size="lg"
@@ -834,11 +1032,7 @@ export default function CalendarioBarberia({ info }) {
               </button>
             </div>
           </Modal.Body>
-
-
         </Modal>
-      </div>
-
 
       <style jsx global>{`
  * {
@@ -870,105 +1064,99 @@ export default function CalendarioBarberia({ info }) {
 .fc {
     font-family: system-ui, -apple-system, sans-serif;
     background: transparent;
-    color: #ffffff;
+    color: #2c3e50;
 }
 
 .fc .fc-toolbar {
     padding: 1.5rem;
-    background: #1a1a1a;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
+    background: transparent;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 1rem;
 }
 
 .fc .fc-toolbar-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
-    color: #fff !important;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    color: #2c3e50 !important;
+    text-transform: capitalize;
 }
 
 .fc .fc-button {
-    background-color: #2d2d2d !important;
-    border: 1px solid #b89b58 !important;
-    color: #b89b58 !important;
-    box-shadow: 
-        0 4px 6px rgba(0, 0, 0, 0.1), 
-        inset 0 0 10px rgba(255, 255, 255, 0.05);
-    padding: 0.6rem 1.2rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border-radius: 10px;
+    background-color: white !important;
+    border: 1px solid #dee2e6 !important;
+    color: #2c3e50 !important;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    font-size: 0.9rem;
 }
 
 .fc .fc-button:hover {
-    background-color: #b89b58 !important;
-    color: #1a1a1a !important;
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 
-        0 6px 10px rgba(0, 0, 0, 0.2), 
-        inset 0 0 15px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa !important;
+    border-color: #27ae60 !important;
+    color: #27ae60 !important;
+    transform: translateY(-1px);
+}
+
+.fc .fc-button-primary:not(:disabled):active,
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+    background-color: #27ae60 !important;
+    border-color: #27ae60 !important;
+    color: white !important;
 }
 
 .fc-theme-standard .fc-scrollgrid {
-    border-color: #333333;
-    background: #1a1a1a;
-    border-radius: 15px;
-}
-
-.fc .fc-day {
-    background: #1a1a1a;
-    transition: all 0.3s ease;
-}
-
-.fc .fc-day:hover,
-.fc .fc-day.fc-day-today:hover {
-    background: #2d2d2d;
-    transform: translateY(-5px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    z-index: 10;
-    position: relative;
-}
-
-.fc .fc-day-today {
-    background: rgba(184, 155, 88, 0.1) !important;
-    border-radius: 10px;
-}
-
-.fc .fc-day-today .fc-daygrid-day-number {
-    color: #b89b58;
-    font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.fc .fc-daygrid-day-number {
-    color: #ffffff;
-    padding: 0.7rem;
-    transition: all 0.3s ease;
+    border-color: #e9ecef;
+    background: white;
     border-radius: 8px;
 }
 
+.fc .fc-day {
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.fc .fc-day:hover {
+    background: #f8f9fa;
+}
+
+.fc .fc-day-today {
+    background: #e8f5e9 !important;
+    border-radius: 8px;
+}
+
+.fc .fc-day-today .fc-daygrid-day-number {
+    color: #27ae60;
+    font-weight: 700;
+}
+
+.fc .fc-daygrid-day-number {
+    color: #2c3e50;
+    padding: 0.5rem;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
 .fc .fc-daygrid-day:hover .fc-daygrid-day-number {
-    color: #b89b58;
+    color: #27ae60;
 }
 
 .fc .fc-col-header-cell {
-    background: #2d2d2d;
-    color: #fff !important;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+    background: #f8f9fa;
+    color: #2c3e50 !important;
+    font-weight: 600;
+    text-transform: capitalize;
+    padding: 0.75rem 0;
+    border-color: #e9ecef;
 }
 
 .fc-day-other {
-    background: #161616;
+    background: #f8f9fa;
 }
 
 .fc-day-other .fc-daygrid-day-number {
-    color: #666666;
+    color: #adb5bd;
 }
 
 @media (max-width: 640px) {

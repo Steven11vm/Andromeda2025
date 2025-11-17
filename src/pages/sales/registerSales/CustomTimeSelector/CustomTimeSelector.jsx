@@ -1,24 +1,14 @@
 import React, { useState } from 'react';
 import { Button, Popover, OverlayTrigger, Form } from 'react-bootstrap';
 
-const CustomTimeSelector = ({ value, onChange, name, disabled = false }) => {
+const CustomTimeSelector = ({ value, onChange, name, disabled = false, occupiedSlots = [], selectedDate = null }) => {
   const [show, setShow] = useState(false);
-  const [selectedHour, setSelectedHour] = useState(null);
 
   const generateHourSlots = () => {
     const slots = [];
-    for (let hour = 7; hour < 20; hour++) {
+    // Solo horas completas de 7:00 AM a 10:00 PM (22:00)
+    for (let hour = 7; hour <= 22; hour++) {
       const time24 = `${hour.toString().padStart(2, '0')}:00`;
-      const time12 = convertTo12HourFormat(time24);
-      slots.push({ time24, time12 });
-    }
-    return slots;
-  };
-
-  const generateMinuteSlots = (hour) => {
-    const slots = [];
-    for (let minute = 0; minute <= 30; minute += 30) {
-      const time24 = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
       const time12 = convertTo12HourFormat(time24);
       slots.push({ time24, time12 });
     }
@@ -45,58 +35,81 @@ const CustomTimeSelector = ({ value, onChange, name, disabled = false }) => {
     return `${hours.toString().padStart(2, '0')}:${minutes}`;
   };
 
-  const hourSlots = generateHourSlots();
-
-  const handleHourSelect = (hour) => {
-    setSelectedHour(hour);
+  const isTimeSlotOccupied = (time24) => {
+    if (!selectedDate || !occupiedSlots || occupiedSlots.length === 0) {
+      return false;
+    }
+    
+    return occupiedSlots.some(slot => {
+      const slotStart = new Date(`${selectedDate}T${slot.startTime}`);
+      const slotEnd = new Date(`${selectedDate}T${slot.endTime}`);
+      const currentSlot = new Date(`${selectedDate}T${time24}`);
+      return currentSlot >= slotStart && currentSlot < slotEnd;
+    });
   };
 
   const handleTimeSelect = (time24) => {
+    if (isTimeSlotOccupied(time24)) {
+      // El botón ya está deshabilitado, pero esto es una medida de seguridad adicional
+      return;
+    }
     onChange(time24);
     setShow(false);
-    setSelectedHour(null);
   };
 
+  const hourSlots = generateHourSlots();
+
   const popover = (
-    <Popover id="popover-basic" className="custom-time-popover">
-      <Popover.Body>
-        <div className="time-grid">
-          {selectedHour === null ? (
-            hourSlots.map(({ time24, time12 }) => (
+    <Popover id="popover-basic" className="custom-time-popover" style={{ maxWidth: '300px' }}>
+      <Popover.Header style={{ backgroundColor: '#f8f9fa', borderBottom: '1px solid #dee2e6' }}>
+        <strong>Selecciona una hora</strong>
+      </Popover.Header>
+      <Popover.Body style={{ padding: '15px' }}>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(3, 1fr)', 
+          gap: '8px',
+          maxHeight: '300px',
+          overflowY: 'auto'
+        }}>
+          {hourSlots.map(({ time24, time12 }) => {
+            const isOccupied = isTimeSlotOccupied(time24);
+            return (
               <Button
                 key={time24}
-                variant="outline-primary"
-                size="sm"
-                onClick={() => handleHourSelect(time24.split(':')[0])}
-                className="m-1"
-              >
-                {time12.split(':')[0] + ' ' + time12.split(' ')[1]}
-              </Button>
-            ))
-          ) : (
-            generateMinuteSlots(selectedHour).map(({ time24, time12 }) => (
-              <Button
-                key={time24}
-                variant="outline-primary"
+                variant={isOccupied ? "danger" : "outline-primary"}
                 size="sm"
                 onClick={() => handleTimeSelect(time24)}
-                className="m-1"
+                disabled={isOccupied}
+                title={isOccupied ? 'Esta hora ya está ocupada' : `Seleccionar ${time12}`}
+                style={{
+                  opacity: isOccupied ? 0.5 : 1,
+                  cursor: isOccupied ? 'not-allowed' : 'pointer',
+                  fontSize: '0.875rem',
+                  padding: '8px 12px',
+                  border: isOccupied ? '1px solid #dc3545' : '1px solid #0d6efd',
+                  backgroundColor: isOccupied ? '#f8d7da' : 'transparent',
+                  color: isOccupied ? '#721c24' : '#0d6efd',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  if (!isOccupied) {
+                    e.target.style.backgroundColor = '#0d6efd';
+                    e.target.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isOccupied) {
+                    e.target.style.backgroundColor = 'transparent';
+                    e.target.style.color = '#0d6efd';
+                  }
+                }}
               >
-                {time12}
+                {time12} {isOccupied && ' ⚠️'}
               </Button>
-            ))
-          )}
+            );
+          })}
         </div>
-        {selectedHour !== null && (
-          <Button
-            variant="link"
-            size="sm"
-            onClick={() => setSelectedHour(null)}
-            className="mt-2"
-          >
-            Volver a selección de hora
-          </Button>
-        )}
       </Popover.Body>
     </Popover>
   );
@@ -104,7 +117,7 @@ const CustomTimeSelector = ({ value, onChange, name, disabled = false }) => {
   const displayValue = value ? convertTo12HourFormat(value) : '';
 
   return (
-    <div className="d-flex align-items-center">
+    <div className="d-flex align-items-center gap-2">
       <Form.Control
         type="text"
         name={name}
@@ -115,7 +128,12 @@ const CustomTimeSelector = ({ value, onChange, name, disabled = false }) => {
         }}
         className="me-2"
         disabled={disabled}
-        placeholder="hh:mm AM/PM"
+        placeholder="Selecciona una hora"
+        readOnly
+        style={{
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          backgroundColor: disabled ? '#e9ecef' : 'white'
+        }}
       />
       {!disabled && (
         <OverlayTrigger
@@ -124,12 +142,18 @@ const CustomTimeSelector = ({ value, onChange, name, disabled = false }) => {
           show={show}
           onToggle={() => {
             setShow(!show);
-            setSelectedHour(null);
           }}
           overlay={popover}
+          rootClose
         >
-          <Button variant="outline-secondary">
-            Seleccionar
+          <Button 
+            variant="outline-primary"
+            style={{
+              minWidth: '120px',
+              fontWeight: '500'
+            }}
+          >
+            {value ? 'Cambiar' : 'Seleccionar'}
           </Button>
         </OverlayTrigger>
       )}
