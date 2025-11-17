@@ -43,25 +43,104 @@ const SectionProducts = () => {
 
     return (
         <>
+            <style>
+                {`
+                    /* Solo en móvil: asegurar que los controles del carrusel no se interpongan con el menú móvil */
+                    @media (max-width: 768px) {
+                        .react-multi-carousel-list {
+                            position: relative;
+                            z-index: 1 !important;
+                        }
+                        
+                        .react-multi-carousel-dot-list {
+                            z-index: 1 !important;
+                        }
+                        
+                        .react-multi-carousel-dot button {
+                            z-index: 1 !important;
+                        }
+                        
+                        .react-multi-carousel-arrow {
+                            z-index: 1 !important;
+                        }
+                        
+                        .react-multi-carousel-arrow--left {
+                            z-index: 1 !important;
+                        }
+                        
+                        .react-multi-carousel-arrow--right {
+                            z-index: 1 !important;
+                        }
+                    }
+                `}
+            </style>
             <div className='product-carousel'>
-                <Carousel responsive={responsive}>
+                <Carousel 
+                    responsive={responsive}
+                    swipeable={true}
+                    draggable={true}
+                    showDots={false}
+                    infinite={true}
+                    autoPlay={false}
+                    keyBoardControl={true}
+                    customTransition="transform 300ms ease-in-out"
+                    transitionDuration={300}
+                    containerClass="carousel-container"
+                    itemClass="carousel-item-padding-40-px"
+                >
                     {products.map((product) => (
-                        <div className='card card-product-carousel' key={product.id}>
-                            <img className='product--image' src={product.Image} alt="image-product" />
+                        <div className='card card-product-carousel' key={product.id} style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            height: '100%'
+                        }}>
+                            <div className="product-image-wrapper" style={{ 
+                                width: '100%',
+                                overflow: 'hidden',
+                                borderRadius: '20px',
+                                marginBottom: '15px',
+                                position: 'relative',
+                                backgroundColor: '#1a1a1a',
+                                aspectRatio: '1 / 1',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <img 
+                                    className='product--image' 
+                                    src={product.Image} 
+                                    alt={product.Product_Name}
+                                    loading="lazy"
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                        display: 'block'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = 'scale(1.08)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = 'scale(1)';
+                                    }}
+                                />
+                            </div>
                             <h2 className='Product--name'>{product.Product_Name}</h2>
                             <p className='price-card-product'>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.Price)}</p>
-                            <div className='d-flex align-items-center justify-content-center'>
-                                <div class="cart" data-tooltip="PRICE $20">
-                                    <Link to={'/shop'}>
-                                        <div class="button-wrapper-cart">
-                                            <div class="text-card">Ir al carrito</div>
-                                            <span class="icon-button-card">
+                            <div className='d-flex align-items-center justify-content-center' style={{ marginTop: 'auto', paddingTop: '10px' }}>
+                                <div className="cart" data-tooltip="PRICE $20">
+                                    <Link to={'/shop'} style={{ textDecoration: 'none' }}>
+                                        <div className="button-wrapper-cart">
+                                            <div className="text-card">Ir al carrito</div>
+                                            <span className="icon-button-card">
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     width="16"
                                                     height="16"
                                                     fill="currentColor"
-                                                    class="bi bi-cart2"
+                                                    className="bi bi-cart2"
                                                     viewBox="0 0 16 16"
                                                 >
                                                     <path
@@ -72,7 +151,6 @@ const SectionProducts = () => {
                                         </div>
                                     </Link>
                                 </div>
-
                             </div>
                         </div>
                     ))}

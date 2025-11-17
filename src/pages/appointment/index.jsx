@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import esLocale from "@fullcalendar/core/locales/es";
 import { GrStatusInfo } from "react-icons/gr";
 import { usePermissions } from '../../components/PermissionCheck';
+import './appointment.css';
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     const backgroundColor = theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[800];
@@ -466,6 +467,7 @@ const Appointment = () => {
                             <Form.Select
                                 value={selectedView}
                                 onChange={(e) => handleViewChange(e.target.value)}
+                                className="mobile-select"
                                 style={{ width: 'auto', display: 'inline-block', marginLeft: '10px', marginRight: '10px' }}
                             >
                                 <option value="dayGridMonth">Mes</option>
@@ -475,6 +477,7 @@ const Appointment = () => {
                             <Form.Select
                                 value={selectedEmployee}
                                 onChange={handleEmployeeChange}
+                                className="mobile-select"
                                 style={{ width: 'auto', display: 'inline-block' }}
                             >
                                 <option value="">Todos los clientes</option>

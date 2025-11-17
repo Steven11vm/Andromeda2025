@@ -90,7 +90,17 @@ export default function CalendarioBarberia({ info }) {
 
       const usersData = userResponse.data;
       const userId = localStorage.getItem('userId');
-      const programmingData = programmingResponse.data.filter(event => event.clienteId.toString() === userId);
+      
+      if (!userId) {
+        console.error('No userId found in localStorage');
+        setHasFetchedData(true);
+        return;
+      }
+
+      // Filtrar citas del cliente logueado
+      const programmingData = programmingResponse.data.filter(event => 
+        event.clienteId && event.clienteId.toString() === userId.toString()
+      );
 
       setUsers(usersData);
 
@@ -114,6 +124,7 @@ export default function CalendarioBarberia({ info }) {
       setHasFetchedData(true);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setHasFetchedData(true);
     }
   };
 
@@ -291,6 +302,8 @@ export default function CalendarioBarberia({ info }) {
           // Refresh the calendar events and close the modal
           await fetchData();
           setShowDetailModal(false);
+          // También actualizar usando getProgramming para asegurar consistencia
+          await getProgramming();
         } else {
           await Swal.fire({
             title: 'Cita cancelada',
@@ -339,6 +352,11 @@ export default function CalendarioBarberia({ info }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+          return;
+        }
+
         const [userResponse, programmingResponse, salesResponse] = await Promise.all([
           axios.get(urlUsers),
           axios.get(urlAppointment),
@@ -346,7 +364,10 @@ export default function CalendarioBarberia({ info }) {
         ]);
 
         const usersData = userResponse.data;
-        const programmingData = programmingResponse.data;
+        // Filtrar solo las citas del cliente logueado
+        const programmingData = programmingResponse.data.filter(event => 
+          event.clienteId && event.clienteId.toString() === userId.toString()
+        );
         const salesData = salesResponse.data;
 
         setUsers(usersData);
@@ -398,12 +419,20 @@ export default function CalendarioBarberia({ info }) {
 
   const getProgramming = async () => {
     try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        return;
+      }
+
       const [programmingResponse, salesResponse] = await Promise.all([
         axios.get(urlAppointment),
         axios.get(urlSales)
       ]);
 
-      const programmingData = programmingResponse.data;
+      // Filtrar solo las citas del cliente logueado
+      const programmingData = programmingResponse.data.filter(event => 
+        event.clienteId && event.clienteId.toString() === userId.toString()
+      );
       const salesData = salesResponse.data;
 
       const appointmentEmployeeMap = {};
@@ -431,12 +460,6 @@ export default function CalendarioBarberia({ info }) {
         }
       }));
 
-      if (userRole === '2') {
-        transformedEvents = transformedEvents.filter(event =>
-          event.extendedProps.empleadoId?.toString() === userId
-        );
-      }
-
       setEvents(transformedEvents);
     } catch (error) {
       console.error('Error fetching programming:', error);
@@ -461,21 +484,20 @@ export default function CalendarioBarberia({ info }) {
     const handleViewClickWrapper = () => {
       handleViewClick(info);
     };
-    const convertTo12HourFormat = (time) => {
-      const [hours, minutes] = time.split(':').map(Number); // Divide la hora en partes
-      const period = hours >= 12 ? 'PM' : 'AM'; // Determina si es AM o PM
-      const standardHours = hours % 12 || 12; // Convierte a formato de 12 horas
-      return `${standardHours}:${minutes.toString().padStart(2, '0')} ${period}`;
-    };
 
-
+    // Obtener información de la cita para mostrar
+    const appointmentStatus = info.event.extendedProps?.status || 'Pendiente';
+    const appointmentTime = info.event.extendedProps?.Init_Time || '';
+    
     return (
       <div
         className='programming-content'
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
         onClick={handleClick}
       >
-        <span className='span-programming'>{getUserName(users, parseInt(info.event.title))}</span>
+        <span className='span-programming'>
+          {appointmentStatus} - {appointmentTime}
+        </span>
         {isClicked && (
           <Button
             onClick={handleViewClickWrapper}
@@ -682,21 +704,37 @@ export default function CalendarioBarberia({ info }) {
           </div>
 
           <div className="table-responsive mt-3">
-            <FullCalendar
-              ref={calendarRef}
-              locale={esLocale}
-              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-              events={filteredEvents}
-              initialView={selectedView}
-              dateClick={handleDateClick}
-              eventContent={(info) => <EventComponent info={info} />}
-              locales={[esLocale]}
-              headerToolbar={{
-                left: "prev,next today",
-                center: "title",
-                right: "",
-              }}
-            />
+            {filteredEvents.length === 0 ? (
+              <div style={{ 
+                padding: '3rem', 
+                textAlign: 'center', 
+                color: '#b89b58',
+                backgroundColor: '#1a1a1a',
+                borderRadius: '10px',
+                margin: '2rem 0'
+              }}>
+                <h4>No tienes citas reservadas</h4>
+                <p style={{ marginTop: '1rem', color: '#ffffff' }}>
+                  Haz clic en una fecha del calendario o ve a la página de registro para crear una nueva cita.
+                </p>
+              </div>
+            ) : (
+              <FullCalendar
+                ref={calendarRef}
+                locale={esLocale}
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                events={filteredEvents}
+                initialView={selectedView}
+                dateClick={handleDateClick}
+                eventContent={(info) => <EventComponent info={info} />}
+                locales={[esLocale]}
+                headerToolbar={{
+                  left: "prev,next today",
+                  center: "title",
+                  right: "",
+                }}
+              />
+            )}
           </div>
         </div>
 

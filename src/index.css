@@ -25,16 +25,21 @@
     width: 100%;
     display: flex;
     justify-content: space-around;
-    transition: 0.7s;
+    align-items: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 30px 20px;
-    z-index: 10;
-    background: none;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
     height: 90px !important;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
 }
 
 .header-index.abajo {
-    background: #000;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
     padding: 15px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 nav {
@@ -72,17 +77,36 @@ nav {
     font-weight: 700;
     display: flex;
     align-items: center;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.logo-index:hover {
+    opacity: 0.9;
 }
 
 .logo-index img {
     width: 50px;
-    margin-right: 5px;
+    height: 50px;
+    margin-right: 8px;
+    transition: all 0.3s ease;
+}
+
+.logo-index:hover img {
+    opacity: 0.9;
 }
 
 .logo-index span {
     color: #fff;
     font-size: 22px;
     text-decoration: none;
+    letter-spacing: 0.3px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.logo-index:hover span {
+    color: rgba(255, 255, 255, 0.8);
 }
 
 header .logo-index span {
@@ -100,8 +124,10 @@ header .logo-index span {
     text-decoration: none;
     color: #fff;
     font-weight: 500;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
     position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 5px 0;
 }
 
 .navBar-index a:hover {
@@ -111,26 +137,38 @@ header .logo-index span {
 .navBar-index a::before {
     content: '';
     position: absolute;
-    width: 100%;
-    height: 2px;
+    width: 0;
+    height: 1px;
     background: #b89b58;
     left: 0;
-    bottom: -5px;
-    border-radius: 10px;
+    bottom: 0;
     transform: scaleX(0);
     transition: transform 0.3s ease;
 }
 
 .navBar-index a:hover::before {
+    width: 100%;
     transform: scaleX(1);
 }
 
 .book-now-btn {
-    background-color: #b89b58 !important;
-    border-radius: 0 !important;
-    padding: 8px 24px !important;
+    background: #b89b58 !important;
+    border-radius: 6px !important;
+    padding: 10px 28px !important;
     font-size: 14px !important;
-    letter-spacing: 1px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease !important;
+    text-transform: none !important;
+    border: none !important;
+}
+
+.book-now-btn:hover {
+    background: #c9a968 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    opacity: 0.9;
 }
 
 .hero-content {
@@ -139,6 +177,7 @@ header .logo-index span {
     left: 5%;
     transform: translateY(-50%);
     max-width: 600px;
+    padding: 0 20px;
 }
 
 .hero-content h1 {
@@ -146,6 +185,8 @@ header .logo-index span {
     font-size: 60px;
     font-weight: 700;
     margin-bottom: 20px;
+    line-height: 1.2;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hero-content p {
@@ -155,6 +196,43 @@ header .logo-index span {
     color: #b89b58;
     font-weight: 600;
     font-family: "Poppins", sans-serif !important;
+}
+
+@media screen and (max-width: 768px) {
+    .hero-content {
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        width: 90%;
+        max-width: 100%;
+        padding: 0 15px;
+    }
+
+    .hero-content h1 {
+        font-size: 38px;
+        margin-bottom: 15px;
+    }
+
+    .hero-content p {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .hero-content {
+        padding: 0 10px;
+    }
+
+    .hero-content h1 {
+        font-size: 28px;
+        margin-bottom: 12px;
+    }
+
+    .hero-content p {
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
 }
 
 .read-more-btn {
@@ -177,11 +255,39 @@ header .logo-index span {
     background: url(assets/images/h1_hero.png);
     background-size: cover;
     background-position: center center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 768px) {
+    .zona1 {
+        height: 70vh;
+        min-height: 500px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .zona1 {
+        height: 60vh;
+        min-height: 400px;
+    }
 }
 
 .userLoginn {
     font-size: 16px !important;
     color: #fff !important;
+    transition: all 0.3s ease !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    background: none !important;
+    text-transform: none !important;
+}
+
+.userLoginn:hover {
+    background-color: transparent !important;
+    transform: none !important;
+    opacity: 0.8;
 }
 
 .nav-toggle {
@@ -218,33 +324,27 @@ header .logo-index span {
 }
 
 @media screen and (max-width: 768px) {
+    .header-index {
+        padding: 20px 15px;
+        height: 70px !important;
+    }
+
+    .header-index.abajo {
+        padding: 12px 15px;
+    }
+
     .navBar-index {
         flex-direction: column;
-        gap: 20px;
+        gap: 0;
     }
 
     .nav-container {
         flex-direction: column;
-        gap: 20px;
+        gap: 0;
     }
 
     .nav-toggle {
         display: block;
-    }
-
-    .hero-content {
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        width: 90%;
-    }
-
-    .hero-content h1 {
-        font-size: 36px;
-    }
-
-    .hero-content p {
-        font-size: 12px;
     }
 
     .read-more-btn,
@@ -258,9 +358,16 @@ header .logo-index span {
         margin-left: 0;
         margin-top: 10px;
     }
+}
 
-    .zona1 {
-        height: 70vh;
+@media screen and (max-width: 480px) {
+    .header-index {
+        padding: 15px 10px;
+        height: 60px !important;
+    }
+
+    .header-index.abajo {
+        padding: 10px 10px;
     }
 }
 
@@ -273,6 +380,23 @@ header .logo-index span {
     font-size: 40px;
     font-weight: 600;
     color: #b89b58;
+    text-align: center;
+    margin: 0;
+    padding: 0 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .tittle-landingPage {
+        font-size: 32px;
+        padding: 0 15px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .tittle-landingPage {
+        font-size: 26px;
+        padding: 0 10px;
+    }
 }
 
 .description-landingPage {
@@ -325,41 +449,90 @@ header .logo-index span {
     color: #b89b58 !important;
 }
 
+.services-container {
+    width: 100%;
+    padding: 10px 20px;
+}
+
+@media screen and (min-width: 768px) {
+    .services-container {
+        padding: 10px 100px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .services-container {
+        padding: 10px 270px;
+    }
+}
+
 @media screen and (max-width: 768px) {
     .section-services {
         padding: 10px 20px !important;
     }
 
+    .services-container {
+        padding: 10px 15px !important;
+    }
+
+    .accordion {
+        margin-bottom: 12px !important;
+        border-radius: 8px !important;
+    }
+
     .accordion .MuiAccordionSummary-root {
-        padding: 8px;
+        padding: 12px 15px;
+        min-height: 56px !important;
     }
 
     .css-15v22id-MuiAccordionDetails-root {
-        padding: 20px 16px 12px !important;
+        padding: 20px 16px 16px !important;
     }
 
     .accordion .MuiButton-root {
         width: 100%;
         margin-top: 10px;
     }
+
+    .accordion .MuiAccordionSummary-content {
+        margin: 0 !important;
+    }
+
+    .accordion .MuiTypography-root {
+        font-size: 15px !important;
+        font-weight: 500 !important;
+    }
 }
 
 @media screen and (max-width: 480px) {
     .section-services {
+        padding: 10px 10px !important;
+    }
+
+    .services-container {
         padding: 10px !important;
     }
 
-    .accordion .MuiAccordionSummary-root {
-        flex-direction: column;
-        align-items: flex-start;
+    .accordion {
+        margin-bottom: 10px !important;
+        border-radius: 6px !important;
     }
 
-    .accordion .MuiAccordionSummary-content {
-        margin: 0 0 10px 0;
+    .accordion .MuiAccordionSummary-root {
+        padding: 10px 12px;
+        min-height: 52px !important;
+    }
+
+    .css-15v22id-MuiAccordionDetails-root {
+        padding: 16px 12px 12px !important;
+    }
+
+    .accordion .MuiTypography-root {
+        font-size: 14px !important;
     }
 
     .accordion .MuiAccordionSummary-expandIcon {
-        align-self: flex-end;
+        font-size: 20px !important;
     }
 }
 
@@ -379,26 +552,91 @@ header .logo-index span {
     width: 100%;
     height: 200px;
     border-radius: 20px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+}
+
+.product-image-wrapper {
+    position: relative;
+}
+
+.product-image-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 100%);
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .card-product-carousel {
     border: none;
     border-radius: 20px;
-    padding: 10px;
+    padding: 15px;
     text-align: center;
-    height: 370px;
+    height: 400px;
     width: 290px;
     display: flex;
     flex-direction: column;
-    background: #000000;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
+    margin: 0 auto;
+    border: 1px solid rgba(184, 155, 88, 0.1);
+}
+
+.card-product-carousel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(184, 155, 88, 0.05) 0%, rgba(184, 155, 88, 0) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.card-product-carousel:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(184, 155, 88, 0.4);
+    border-color: rgba(184, 155, 88, 0.3);
+}
+
+.card-product-carousel:hover::before {
+    opacity: 1;
 }
 
 .product-carousel {
     padding: 40px 100px;
+}
+
+.carousel-container {
+    padding: 20px 0;
+}
+
+.carousel-item-padding-40-px {
+    padding: 0 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .carousel-item-padding-40-px {
+        padding: 0 5px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .carousel-item-padding-40-px {
+        padding: 0;
+    }
 }
 
 .Product--name {
@@ -524,85 +762,140 @@ header .logo-index span {
 @media screen and (max-width: 768px) {
     .section-products {
         height: auto;
-        padding-bottom: 40px;
+        padding-bottom: 50px;
         margin-bottom: 60px;
+        padding-top: 40px !important;
     }
 
     .product-carousel {
-        padding: 20px;
+        padding: 20px 15px;
     }
 
     .card-product-carousel {
-        width: 100%;
+        width: 100% !important;
+        max-width: 100%;
         height: auto;
-        min-height: 350px;
+        min-height: 420px;
+        margin: 0 auto;
+        padding: 18px;
+    }
+
+    .product-image-wrapper {
+        aspect-ratio: 1 / 1;
+        border-radius: 18px;
+        margin-bottom: 18px;
     }
 
     .product--image {
-        height: 150px;
+        height: 100%;
+        min-height: 280px;
+        object-fit: cover;
+        border-radius: 18px;
+        width: 100%;
     }
 
     .Product--name {
-        font-size: 16px;
+        font-size: 18px;
+        margin-top: 18px;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .price-card-product {
+        font-size: 17px;
+        margin-bottom: 18px;
+        font-weight: 700;
     }
 
     .cart {
-        --width: 120px;
-        --height: 36px;
-        --tooltip-height: 30px;
-        --tooltip-width: 80px;
+        --width: 140px;
+        --height: 42px;
+        --tooltip-height: 32px;
+        --tooltip-width: 85px;
+        margin: 0 auto;
+        border-radius: 8px;
     }
 
     .text-card {
-        font-size: 12px;
+        font-size: 14px;
+        font-weight: 500;
     }
 
     .icon-button-card svg {
-        width: 18px;
-        height: 18px;
+        width: 19px;
+        height: 19px;
     }
 }
 
 @media screen and (max-width: 480px) {
     .section-products {
         margin-top: 20px;
-        padding-top: 10px !important;
+        padding-top: 30px !important;
+        padding-bottom: 40px;
     }
 
     .product-carousel {
-        padding: 10px;
+        padding: 15px 8px;
     }
 
     .card-product-carousel {
-        min-height: 300px;
+        min-height: 480px;
+        padding: 18px;
+        width: 100% !important;
+        max-width: 100%;
+        border-radius: 18px;
+    }
+
+    .card-product-carousel:hover {
+        transform: translateY(-5px);
+    }
+
+    .product-image-wrapper {
+        aspect-ratio: 1 / 1;
+        border-radius: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .product--image {
-        height: 120px;
+        height: 100%;
+        min-height: 300px;
+        max-height: 350px;
+        border-radius: 16px;
+        width: 100%;
+        object-position: center;
     }
 
     .Product--name {
-        font-size: 14px;
+        font-size: 17px;
+        margin-top: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+        line-height: 1.3;
     }
 
     .price-card-product {
-        font-size: 14px;
+        font-size: 18px;
+        margin-bottom: 16px;
+        font-weight: 700;
     }
 
     .cart {
-        --width: 100px;
-        --height: 32px;
-        --tooltip-height: 25px;
-        --tooltip-width: 70px;
+        --width: 130px;
+        --height: 40px;
+        --tooltip-height: 30px;
+        --tooltip-width: 80px;
+        border-radius: 8px;
     }
 
     .text-card {
-        font-size: 11px;
+        font-size: 13px;
+        font-weight: 500;
     }
 
     .icon-button-card svg {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
     }
 }
 
@@ -711,4 +1004,3 @@ header .logo-index span {
 /*********************************/
 /*********SECTION PRODUCT*********/
 /*********************************/
-

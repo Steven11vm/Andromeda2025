@@ -1,0 +1,389 @@
+/* Estilos responsive premium para páginas de citas */
+
+/* Mejoras para formularios en móvil */
+@media screen and (max-width: 768px) {
+  .right-content .card {
+    padding: 15px !important;
+  }
+  
+  /* Formulario de registro de citas */
+  .card-detail .row {
+    margin: 0;
+  }
+  
+  .card-detail .col-md-6 {
+    width: 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  /* Tabla de servicios responsive */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+  }
+  
+  .table {
+    min-width: 600px;
+  }
+  
+  .table thead th {
+    white-space: nowrap;
+    font-size: 12px !important;
+    padding: 10px 8px !important;
+  }
+  
+  .table tbody td {
+    white-space: nowrap;
+    font-size: 12px !important;
+    padding: 10px 8px !important;
+  }
+  
+  /* Selects y inputs */
+  .form-select,
+  .form-control {
+    font-size: 16px !important;
+    padding: 12px 14px !important;
+    min-height: 44px;
+  }
+  
+  /* Botones */
+  .btn,
+  .MuiButton-root {
+    min-height: 44px;
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+  }
+  
+  /* Breadcrumbs */
+  .MuiBreadcrumbs-root {
+    flex-wrap: wrap;
+  }
+  
+  /* FullCalendar responsive */
+  .fc {
+    font-size: 12px;
+  }
+  
+  .fc-toolbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .fc-toolbar-chunk {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+  }
+  
+  .fc-button {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    min-height: 40px;
+  }
+  
+  .fc-toolbar-title {
+    font-size: 18px !important;
+    text-align: center;
+  }
+  
+  /* Controles del calendario */
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .d-flex.justify-content-between > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .form-select,
+  .mobile-select {
+    width: 100% !important;
+    margin-bottom: 10px;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .d-flex.justify-content-between > div {
+    width: 100%;
+  }
+  
+  .d-flex.justify-content-between > div .btn-register {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  /* Modal responsive */
+  .modal-dialog {
+    margin: 10px;
+    max-width: calc(100% - 20px);
+  }
+  
+  .modal-content {
+    border-radius: 12px;
+  }
+  
+  .modal-body {
+    padding: 20px 15px;
+  }
+  
+  .modal-body .row {
+    margin: 0;
+  }
+  
+  .modal-body .col-md-6 {
+    width: 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  /* Tabla en modal */
+  .modal-body .table-responsive {
+    margin-top: 15px;
+  }
+  
+  .modal-body .table {
+    font-size: 12px;
+  }
+  
+  .modal-body .table th,
+  .modal-body .table td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+}
+
+/* Mobile Small - Mejoras adicionales */
+@media screen and (max-width: 480px) {
+  .right-content .card {
+    padding: 12px !important;
+  }
+  
+  .card-detail .col-md-6 {
+    margin-bottom: 15px;
+  }
+  
+  .table {
+    min-width: 500px;
+    font-size: 11px;
+  }
+  
+  .table thead th {
+    font-size: 11px !important;
+    padding: 8px 6px !important;
+  }
+  
+  .table tbody td {
+    font-size: 11px !important;
+    padding: 8px 6px !important;
+  }
+  
+  .form-select,
+  .form-control {
+    font-size: 16px !important;
+    padding: 11px 12px !important;
+    min-height: 48px;
+  }
+  
+  .btn,
+  .MuiButton-root {
+    min-height: 48px;
+    padding: 12px 18px !important;
+    font-size: 13px !important;
+    width: 100%;
+  }
+  
+  .fc-toolbar-title {
+    font-size: 16px !important;
+  }
+  
+  .fc-button {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+    min-height: 36px;
+  }
+  
+  .modal-dialog {
+    margin: 5px;
+    max-width: calc(100% - 10px);
+  }
+  
+  .modal-body {
+    padding: 15px 12px;
+  }
+  
+  .modal-body .table {
+    font-size: 11px;
+  }
+  
+  .modal-body .table th,
+  .modal-body .table td {
+    padding: 6px 4px;
+    font-size: 11px;
+  }
+  
+  /* Botones de acción en móvil */
+  .d-flex.justify-content-end.gap-2 {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .d-flex.justify-content-end.gap-2 .btn {
+    width: 100%;
+  }
+  
+  /* Dropdown de cliente */
+  .position-relative {
+    width: 100%;
+  }
+  
+  .position-absolute.w-100.bg-white {
+    position: fixed !important;
+    top: auto !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: calc(100% - 20px) !important;
+    max-height: 300px;
+    z-index: 1050;
+  }
+}
+
+/* Mejoras para el calendario en móvil */
+@media screen and (max-width: 768px) {
+  .fc-daygrid-day {
+    min-height: 60px;
+  }
+  
+  .fc-daygrid-day-number {
+    padding: 4px;
+    font-size: 12px;
+  }
+  
+  .fc-daygrid-event {
+    font-size: 11px;
+    padding: 2px 4px;
+    margin: 1px;
+  }
+  
+  .span-programming {
+    font-size: 11px !important;
+  }
+  
+  .fc-scrollgrid {
+    font-size: 11px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .fc-daygrid-day {
+    min-height: 50px;
+  }
+  
+  .fc-daygrid-day-number {
+    padding: 3px;
+    font-size: 11px;
+  }
+  
+  .fc-daygrid-event {
+    font-size: 10px;
+    padding: 1px 3px;
+    margin: 1px;
+  }
+  
+  .span-programming {
+    font-size: 10px !important;
+  }
+}
+
+/* Mejoras para el formulario de cita fija */
+@media screen and (max-width: 768px) {
+  .bg-light.rounded {
+    padding: 15px !important;
+    margin-top: 15px;
+  }
+  
+  .bg-light.rounded .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .bg-light.rounded .form-label {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  .bg-light.rounded .form-select,
+  .bg-light.rounded .form-control {
+    font-size: 16px;
+    padding: 12px;
+  }
+  
+  .bg-light.rounded .form-text {
+    font-size: 12px;
+    margin-top: 8px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .bg-light.rounded {
+    padding: 12px !important;
+  }
+  
+  .bg-light.rounded .form-label {
+    font-size: 13px;
+  }
+  
+  .bg-light.rounded .form-text {
+    font-size: 11px;
+  }
+}
+
+/* Mejoras para el total */
+@media screen and (max-width: 768px) {
+  .d-flex.align-items-center.justify-content-end.mt-3.p-3 {
+    padding: 15px !important;
+    justify-content: center !important;
+  }
+  
+  .valor {
+    font-size: 1.1rem !important;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .valor {
+    font-size: 1rem !important;
+  }
+}
+
+/* Mejoras para breadcrumbs */
+@media screen and (max-width: 768px) {
+  .MuiBreadcrumbs-root {
+    font-size: 12px;
+  }
+  
+  .MuiChip-root {
+    font-size: 11px !important;
+    height: 28px !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .MuiBreadcrumbs-root {
+    font-size: 11px;
+  }
+  
+  .MuiChip-root {
+    font-size: 10px !important;
+    height: 26px !important;
+  }
+}
+

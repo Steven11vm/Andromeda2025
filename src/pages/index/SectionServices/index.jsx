@@ -29,7 +29,12 @@ const SectionServices = () => {
     };
 
     return (
-        <div>
+        <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '12px',
+            width: '100%'
+        }}>
             {services.map((service) => (
                 <Accordion
                     className='accordion'
@@ -39,6 +44,19 @@ const SectionServices = () => {
                     slots={{ transition: Fade }}
                     slotProps={{ transition: { timeout: 400 } }}
                     sx={[
+                        {
+                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            '&:before': {
+                                display: 'none',
+                            },
+                            marginBottom: '12px',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                            }
+                        },
                         expanded === service.id
                             ? {
                                 '& .MuiAccordion-region': {
@@ -59,18 +77,51 @@ const SectionServices = () => {
                     ]}
                 >
                     <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
+                        expandIcon={<ExpandMoreIcon sx={{ color: '#b89b58' }} />}
                         aria-controls={`panel-${service.id}-content`}
                         id={`panel-${service.id}-header`}
+                        sx={{
+                            '&:hover': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                            }
+                        }}
                     >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <StarIcon /> {/* O cualquier otro icono de Material-UI que prefieras */}
-                            <Typography>{service.name}</Typography>
+                        <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '12px',
+                            width: '100%'
+                        }}>
+                            <StarIcon sx={{ color: '#b89b58', fontSize: '20px' }} />
+                            <Typography sx={{ 
+                                fontWeight: 500,
+                                fontSize: '16px',
+                                '@media (max-width: 480px)': {
+                                    fontSize: '14px'
+                                }
+                            }}>
+                                {service.name}
+                            </Typography>
                         </div>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                            <Typography>{service.description}</Typography>
+                        <div style={{ 
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            gap: '15px',
+                            paddingTop: '8px'
+                        }}>
+                            <Typography sx={{
+                                color: '#ddd',
+                                lineHeight: '1.7',
+                                fontSize: '15px',
+                                '@media (max-width: 480px)': {
+                                    fontSize: '14px',
+                                    lineHeight: '1.6'
+                                }
+                            }}>
+                                {service.description}
+                            </Typography>
                         </div>
                     </AccordionDetails>
                 </Accordion>

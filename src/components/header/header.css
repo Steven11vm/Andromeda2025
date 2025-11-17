@@ -1,6 +1,7 @@
 /* header.css */
 .responsive-header {
     padding: 10px 0;
+    transition: all 0.3s ease;
 }
 
 .logo-container {
@@ -12,6 +13,7 @@
 .header-actions {
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 
 .menu-toggle {
@@ -27,44 +29,179 @@
 .MyAccWrapper {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
 }
 
-@media (max-width: 576px) {
-    .responsive-header .row {
-        flex-direction: column;
-        text-align: center;
+/* Tablet */
+@media screen and (max-width: 1024px) {
+    .responsive-header {
+        padding: 8px 0;
     }
-
-    .logo-container {
-        justify-content: center;
-        margin-top: -40px; 
-        
-    }
-
-    .logo img {
-        max-width: 100px;
-        margin-bottom: 10px;
-    }
-
+    
     .header-actions {
-        flex-direction: column-reverse;
+        gap: 8px;
+    }
+    
+    .searchBox {
+        width: 200px;
+    }
+}
+
+/* Mobile Large */
+@media screen and (max-width: 768px) {
+    .responsive-header {
+        padding: 8px 5px;
+    }
+    
+    .responsive-header .row {
+        flex-wrap: wrap;
         align-items: center;
     }
 
-    .menu-toggle {
-        justify-content: center;
+    .logo-container {
+        justify-content: flex-start;
+        margin-bottom: 0;
+        flex: 1;
     }
 
+    .logo img {
+        max-width: 35px;
+        height: auto;
+    }
+    
+    .logo span {
+        font-size: 16px !important;
+        margin-left: 8px !important;
+    }
 
+    .header-actions {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .menu-toggle {
+        justify-content: flex-end;
+        margin-bottom: 0;
+    }
+    
+    .menu-toggle button {
+        min-width: 40px;
+        min-height: 40px;
+        padding: 8px;
+    }
+
+    .theme-toggle {
+        margin-right: 5px;
+        min-width: 40px;
+        min-height: 40px;
+    }
+    
+    .theme-toggle button {
+        min-width: 40px;
+        min-height: 40px;
+    }
 
     .MyAccWrapper {
-        justify-content: center;
-        margin-top: -60px; 
+        justify-content: flex-end;
+        margin-top: 0;
     }
-    .rounded-circle.theme-toggle{
-        margin-top: -60px; 
+    
+    .MyAcc {
+        flex-direction: row;
+        align-items: center;
     }
+    
+    .ImgUser {
+        width: 36px;
+        height: 36px;
+    }
+    
     .userInfo {
-        margin-top: 10px;
+        margin-top: 0;
+        padding-left: 8px;
+    }
+    
+    .userInfo h5 {
+        font-size: 13px !important;
+    }
+    
+    .userInfo p {
+        font-size: 10px !important;
+    }
+    
+    .searchBox {
+        width: 150px;
+        height: 36px;
+        order: 3;
+        width: 100%;
+        margin-top: 8px;
+    }
+}
+
+/* Mobile Small */
+@media screen and (max-width: 480px) {
+    .responsive-header {
+        padding: 6px 3px;
+    }
+    
+    .responsive-header .row {
+        gap: 5px;
+    }
+
+    .logo-container {
+        flex: 0 0 auto;
+    }
+
+    .logo img {
+        max-width: 30px;
+    }
+    
+    .logo span {
+        font-size: 14px !important;
+        margin-left: 6px !important;
+    }
+
+    .header-actions {
+        gap: 5px;
+        flex: 1;
+        justify-content: flex-end;
+    }
+
+    .menu-toggle button,
+    .theme-toggle button {
+        min-width: 36px;
+        min-height: 36px;
+        padding: 6px;
+    }
+    
+    .menu-toggle button svg,
+    .theme-toggle button svg {
+        font-size: 18px;
+    }
+
+    .MyAccWrapper {
+        flex: 0 0 auto;
+    }
+    
+    .ImgUser {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .userInfo {
+        display: none;
+    }
+    
+    .searchBox {
+        width: 100%;
+        height: 34px;
+        margin-top: 6px;
+        order: 3;
+    }
+    
+    .searchBox input {
+        font-size: 14px !important;
     }
 }

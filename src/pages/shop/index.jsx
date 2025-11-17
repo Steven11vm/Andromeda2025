@@ -32,7 +32,12 @@ import {
   InputLabel,
   Menu,
   MenuItem,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Box,
+  Fab
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -92,6 +97,8 @@ export default function Component() {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categoryMenuAnchorEl, setCategoryMenuAnchorEl] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [productDetailOpen, setProductDetailOpen] = useState(false);
 
   useEffect(() => {
     calculateTotal();
@@ -476,6 +483,16 @@ export default function Component() {
     handleCategoryClose();
   };
 
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+    setProductDetailOpen(true);
+  };
+
+  const handleCloseProductDetail = () => {
+    setProductDetailOpen(false);
+    setSelectedProduct(null);
+  };
+
   return (
     <>
       <header className={`header-index ${isScrolled ? 'abajo' : ''}`}>
@@ -556,8 +573,8 @@ export default function Component() {
           <img src={logo} alt="Logo" />
           <span>Barberia Orion</span>
         </Link>
-        <IconButton
-          className="mobile-menu-icon"
+        <IconButton 
+          className="mobile-menu-icon" 
           onClick={toggleNav}
           sx={{
             color: '#000',
@@ -569,17 +586,12 @@ export default function Component() {
         <div className={`nav-container ${isNavOpen ? 'nav-open' : ''}`}>
           <nav className='navBar-index'>
             <Link to='/index' onClick={() => setIsNavOpen(false)}>INICIO</Link>
-
+            
             {userRole == 3 && (
               <Link to='/appointmentView' onClick={() => setIsNavOpen(false)}>CITAS</Link>
             )}
             <Link to='/shop' onClick={() => setIsNavOpen(false)}>PRODUCTOS</Link>
-
-            <IconButton onClick={() => setDrawerOpen(true)}>
-              <Badge badgeContent={getTotalItems()} color="primary">
-                <AddShoppingCartIcon />
-              </Badge>
-            </IconButton>
+            
           </nav>
           <div className="auth-buttons">
             {isLoggedIn && userEmail ? (
@@ -601,10 +613,10 @@ export default function Component() {
                 >
                   {userEmail}
                 </Button>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleMenuClose}
+                <Menu 
+                  anchorEl={anchorEl} 
+                  open={Boolean(anchorEl)} 
+                  onClose={handleMenuClose} 
                   className='menu-landingPage'
                   anchorOrigin={{
                     vertical: 'bottom',
@@ -642,39 +654,88 @@ export default function Component() {
       </header>
       <main className="container mx-auto mt-8 shop-container">
         <h1 className="shop-title">NUESTROS PRODUCTOS</h1>
-        <Button
-            onClick={handleCategoryClick}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-md shadow transition duration-200 ease-in-out transform hover:scale-105 flex items-center space-x-2"
-          >
-            <Scissors className="w-5 h-5 text-gray-600" />
-            <span>Categorías</span>
-          </Button>
         <div className="search-and-filter">
           <div className="search-bar">
             <input
               type="text"
-              placeholder="Buscar productos"
+              placeholder="Buscar productos..."
               value={searchTerm}
               onChange={handleSearchChange}
+              className="search-input-mobile"
             />
           </div>
-       
-
-
+          <Button
+            onClick={handleCategoryClick}
+            className="category-btn-mobile"
+            sx={{
+              backgroundColor: 'rgba(197, 157, 95, 0.1)',
+              color: '#c59d5f',
+              border: '1px solid rgba(197, 157, 95, 0.3)',
+              borderRadius: '12px',
+              padding: '10px 20px',
+              textTransform: 'none',
+              fontWeight: 500,
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              '&:hover': {
+                backgroundColor: 'rgba(197, 157, 95, 0.2)',
+                transform: 'translateY(-2px)',
+                boxShadow: '0 4px 12px rgba(197, 157, 95, 0.3)'
+              },
+              '&:active': {
+                transform: 'scale(0.98)'
+              }
+            }}
+          >
+            <Scissors style={{ marginRight: '8px', width: '18px', height: '18px' }} />
+            <span>Categorías</span>
+          </Button>
           <Menu
             anchorEl={categoryMenuAnchorEl}
             open={Boolean(categoryMenuAnchorEl)}
             onClose={handleCategoryClose}
             PaperProps={{
               style: {
-                backgroundColor: '#0000',
-                color: 'black',
+                backgroundColor: '#1a1a1a',
+                color: '#fff',
+                borderRadius: '12px',
+                marginTop: '8px',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
               },
             }}
+            MenuListProps={{
+              sx: {
+                padding: '8px',
+              }
+            }}
           >
-            <MenuItem onClick={() => handleCategorySelect('')} className="hover:bg-amber-600">Todas las categorías</MenuItem>
+            <MenuItem 
+              onClick={() => handleCategorySelect('')} 
+              sx={{
+                borderRadius: '8px',
+                marginBottom: '4px',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  backgroundColor: 'rgba(197, 157, 95, 0.2)',
+                  transform: 'translateX(5px)'
+                }
+              }}
+            >
+              Todas las categorías
+            </MenuItem>
             {categories.map((category) => (
-              <MenuItem key={category.id} onClick={() => handleCategorySelect(category.id.toString())} className="hover:bg-amber-600">
+              <MenuItem 
+                key={category.id} 
+                onClick={() => handleCategorySelect(category.id.toString())}
+                sx={{
+                  borderRadius: '8px',
+                  marginBottom: '4px',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    backgroundColor: 'rgba(197, 157, 95, 0.2)',
+                    transform: 'translateX(5px)'
+                  }
+                }}
+              >
                 {category.name}
               </MenuItem>
             ))}
@@ -682,8 +743,23 @@ export default function Component() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <CircularProgress />
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '60vh',
+            width: '100%'
+          }}>
+            <CircularProgress 
+              sx={{
+                color: '#c59d5f',
+                '& .MuiCircularProgress-circle': {
+                  strokeLinecap: 'round',
+                }
+              }}
+              size={60}
+              thickness={4}
+            />
           </div>
         ) : error ? (
           <div className="text-center text-red-500 p-4">
@@ -701,6 +777,8 @@ export default function Component() {
                     src={product.Image}
                     alt={product.Product_Name}
                     className="product-image"
+                    onClick={() => handleProductClick(product)}
+                    style={{ cursor: 'pointer' }}
                   />
                   <Typography variant="h5" component="h2" className="product-title">
                     {product.Product_Name}
@@ -720,7 +798,7 @@ export default function Component() {
                     >
                       <div className="button-wrapper-barber">
                         <span className="text-barber">AGREGAR</span>
-                        <span className="icon-button-barber">
+                        <span className="icon-button-barber icon-button-barber-desktop">
                           <AddShoppingCartIcon />
                         </span>
                       </div>
@@ -756,14 +834,56 @@ export default function Component() {
         )}
       </main>
 
+      {/* Botón flotante del carrito para móvil */}
+      <Fab
+        color="primary"
+        aria-label="cart"
+        className="cart-fab-mobile"
+        onClick={() => setDrawerOpen(true)}
+        sx={{
+          display: { xs: 'flex', md: 'none' },
+          position: 'fixed',
+          bottom: 20,
+          right: 20,
+          zIndex: 999,
+          backgroundColor: '#c59d5f',
+          color: '#fff',
+          '&:hover': {
+            backgroundColor: '#dfbd83',
+            transform: 'scale(1.1)',
+          },
+          boxShadow: '0 8px 24px rgba(197, 157, 95, 0.4)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          '& .MuiSvgIcon-root': {
+            color: '#fff',
+          },
+        }}
+      >
+        <Badge 
+          badgeContent={getTotalItems()} 
+          color="error"
+          sx={{
+            '& .MuiBadge-badge': {
+              backgroundColor: '#ff4444',
+              color: '#fff',
+            }
+          }}
+        >
+          <ShoppingBagIcon sx={{ color: '#fff' }} />
+        </Badge>
+      </Fab>
+
       <Drawer
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         variant="persistent"
-        className="cart-drawer"
+        className="cart-drawer cart-drawer-desktop"
         ModalProps={{
           keepMounted: true,
+        }}
+        sx={{
+          display: { xs: 'none', md: 'block' }
         }}
       >
         <IconButton
@@ -871,6 +991,296 @@ export default function Component() {
         </div>
       </Drawer>
 
+      {/* Drawer móvil desde abajo */}
+      <Drawer
+        anchor="bottom"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        className="cart-drawer cart-drawer-mobile"
+        sx={{
+          display: { xs: 'block', md: 'none' }
+        }}
+        PaperProps={{
+          sx: {
+            borderTopLeftRadius: '20px',
+            borderTopRightRadius: '20px',
+            maxHeight: '90vh',
+          }
+        }}
+      >
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          padding: '8px 0',
+          borderBottom: '1px solid rgba(197, 157, 95, 0.2)'
+        }}>
+          <Box sx={{
+            width: '40px',
+            height: '4px',
+            backgroundColor: '#c59d5f',
+            borderRadius: '2px',
+          }} />
+        </Box>
+        <IconButton
+          onClick={() => setDrawerOpen(false)}
+          className="close-drawer-btn"
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <div className="drawer-content">
+          <div className="drawer-header">
+            <Typography variant="h6">Carrito de Compras</Typography>
+          </div>
+
+          {Object.keys(cart).length === 0 ? (
+            <Typography className="empty-cart-message">Tu carrito está vacío</Typography>
+          ) : (
+            <List>
+              {Object.entries(cart).map(([productId, quantity]) => {
+                const product = products.find((p) => p.id === parseInt(productId));
+                if (!product) return null;
+
+                return (
+                  <ListItem key={productId} className="cart-item">
+                    <ListItemAvatar>
+                      <Avatar src={product.Image} alt={product.Product_Name} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={<span className="product-name">{product.Product_Name}</span>}
+                      secondary={
+                        <span>
+                          <span className="price-text">
+                            {new Intl.NumberFormat('es-CO', {
+                              style: 'currency',
+                              currency: 'COP',
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 0
+                            }).format(product.Price * quantity)}
+                          </span>
+                        </span>
+                      }
+                    />
+                    <div className="quantity-controls">
+                      <IconButton
+                        onClick={() => decreaseQuantity(productId)}
+                        className="quantity-button"
+                        size="small"
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                      <span className="quantity-display">{quantity}</span>
+                      <IconButton
+                        onClick={() => increaseQuantity(productId)}
+                        className="quantity-button"
+                        size="small"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </div>
+                  </ListItem>
+                );
+              })}
+            </List>
+          )}
+          <div className="drawer-footer">
+            <div className="total-amount">
+              <Typography variant="h6">Total:</Typography>
+              <Typography variant="h6">
+                {formattedTotal}$
+              </Typography>
+            </div>
+          </div>
+
+          <Button
+            variant="contained"
+            onClick={handleShowOrders}
+            sx={{
+              backgroundColor: '#c59d5f',
+              '&:hover': {
+                backgroundColor: '#dfbd83',
+              },
+              color: '#fff',
+              width: '100%',
+              marginBottom: '10px'
+            }}
+          >
+            Ver Mis Pedidos
+          </Button>
+
+          <div className="cart-buttons1">
+            <Button
+              variant="outlined"
+              onClick={clearCart}
+              className="barber-button barber-button-clear"
+              startIcon={<DeleteOutlineIcon />}
+            >
+              Vaciar Carrito
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCheckout}
+              className="barber-button barber-button-checkout"
+              startIcon={<ShoppingBagIcon />}
+            >
+              Realizar pedido
+            </Button>
+          </div>
+        </div>
+      </Drawer>
+
+      {/* Modal de vista detallada del producto */}
+      <Dialog
+        open={productDetailOpen}
+        onClose={handleCloseProductDetail}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            backgroundColor: '#1a1a1a',
+            color: '#fff',
+            borderRadius: '20px',
+            maxHeight: '95vh',
+            margin: { xs: '10px', md: '20px' }
+          }
+        }}
+        className="product-detail-modal"
+      >
+        {selectedProduct && (
+          <>
+            <DialogTitle sx={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              padding: '20px 24px',
+              borderBottom: '1px solid rgba(197, 157, 95, 0.2)'
+            }}>
+              <Typography variant="h4" sx={{ 
+                fontWeight: 600,
+                background: 'linear-gradient(45deg, #fff, #c59d5f)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
+                {selectedProduct.Product_Name}
+              </Typography>
+              <IconButton
+                onClick={handleCloseProductDetail}
+                sx={{
+                  color: '#c59d5f',
+                  '&:hover': {
+                    backgroundColor: 'rgba(197, 157, 95, 0.1)',
+                    transform: 'rotate(90deg)'
+                  },
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </DialogTitle>
+            <DialogContent sx={{ padding: { xs: '20px', md: '30px' } }}>
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: { xs: 'column', md: 'row' },
+                gap: '30px',
+                alignItems: { xs: 'center', md: 'flex-start' }
+              }}>
+                <Box sx={{ 
+                  width: { xs: '100%', md: '50%' },
+                  borderRadius: '15px',
+                  overflow: 'hidden',
+                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)'
+                }}>
+                  <img
+                    src={selectedProduct.Image}
+                    alt={selectedProduct.Product_Name}
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      display: 'block',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </Box>
+                <Box sx={{ 
+                  width: { xs: '100%', md: '50%' },
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px'
+                }}>
+                  <Typography variant="body1" sx={{ 
+                    color: '#ccc',
+                    lineHeight: 1.8,
+                    fontSize: '16px'
+                  }}>
+                    {selectedProduct.Description}
+                  </Typography>
+                  <Box sx={{
+                    padding: '20px',
+                    backgroundColor: 'rgba(197, 157, 95, 0.1)',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(197, 157, 95, 0.3)'
+                  }}>
+                    <Typography variant="h5" sx={{
+                      color: '#c59d5f',
+                      fontWeight: 600,
+                      fontSize: '28px'
+                    }}>
+                      {new Intl.NumberFormat('es-CO', { 
+                        style: 'currency', 
+                        currency: 'COP',
+                        minimumFractionDigits: 0 
+                      }).format(selectedProduct.Price)}
+                    </Typography>
+                  </Box>
+                  {selectedProduct.Stock !== undefined && (
+                    <Typography variant="body2" sx={{ color: '#999' }}>
+                      Stock disponible: {selectedProduct.Stock}
+                    </Typography>
+                  )}
+                  {userRole === '3' && (
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        addToCart(selectedProduct);
+                        toast.success('Producto agregado al carrito', {
+                          position: "top-right",
+                          autoClose: 2000,
+                        });
+                      }}
+                      sx={{
+                        backgroundColor: '#c59d5f',
+                        color: '#fff',
+                        padding: '14px 28px',
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        borderRadius: '12px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        '&:hover': {
+                          backgroundColor: '#dfbd83',
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 8px 20px rgba(197, 157, 95, 0.4)'
+                        },
+                        transition: 'all 0.3s ease',
+                        marginTop: '10px'
+                      }}
+                      startIcon={<AddShoppingCartIcon />}
+                    >
+                      Agregar al Carrito
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+            </DialogContent>
+          </>
+        )}
+      </Dialog>
+
       <Snackbar
         open={!!alertMessage}
         autoHideDuration={3000}
@@ -898,4 +1308,3 @@ export default function Component() {
     </>
   );
 }
-

@@ -20,6 +20,7 @@ import Switch from '@mui/material/Switch';
 import { Modal, Form, Col, Row } from 'react-bootstrap';
 import Pagination from '../../components/pagination/index';
 import { usePermissions } from '../../components/PermissionCheck';
+import './services.css';
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     const backgroundColor =

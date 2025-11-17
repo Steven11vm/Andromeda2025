@@ -412,25 +412,24 @@ export default function Component() {
     };
 
     const validateField = (fieldName, value) => {
-        let newErrors = { ...errors };
+        let error = '';
 
         switch (fieldName) {
             case 'Billnumber':
-                if (value.length === 0) {
-                    newErrors.Billnumber = 'El número de Comprobante es requerido';
+                if (!value || value.length === 0) {
+                    error = 'El número de Comprobante es requerido';
                 } else if (value.length !== 3) {
-                    newErrors.Billnumber = 'El número de Comprobante debe tener exactamente 3 dígitos';
+                    error = 'El número de Comprobante debe tener exactamente 3 dígitos';
                 } else if (!/^\d+$/.test(value)) {
-                    newErrors.Billnumber = 'El número de Comprobante debe contener solo dígitos';
-                } else {
-                    newErrors.Billnumber = '';
+                    error = 'El número de Comprobante debe contener solo dígitos';
                 }
                 break;
             default:
                 break;
         }
 
-        setErrors(newErrors);
+        setErrors(prevErrors => ({ ...prevErrors, [fieldName]: error }));
+        return error;
     };
 
     const handleServiceRemove = (index) => {
@@ -514,9 +513,10 @@ export default function Component() {
             return;
         }
 
-        validateField('Billnumber', saleInfo.Billnumber);
+        // Validar campos requeridos
+        const billnumberError = validateField('Billnumber', saleInfo.Billnumber);
 
-        if (errors.Billnumber) {
+        if (billnumberError || !saleInfo.Billnumber || saleInfo.Billnumber.length !== 3) {
             show_alerta('Por favor, corrija los errores antes de continuar', 'warning');
             return;
         }
@@ -526,37 +526,44 @@ export default function Component() {
             return;
         }
 
-        const { isValid: isEmployeeAvailable, message: employeeMessage } = validateEmployeeAvailability();
-        if (!isEmployeeAvailable) {
-            show_alerta(employeeMessage, 'error');
-            return;
-        }
-
-        const { isValid: isTimeValid, message: timeMessage } = validateAppointmentTime();
-        if (!isTimeValid) {
-            show_alerta(timeMessage, 'error');
-            return;
-        }
-
-        const { isValid: isAppointmentAvailable, message: appointmentMessage } = validateAppointmentAvailability();
-        if (!isAppointmentAvailable) {
-            show_alerta(appointmentMessage, 'error');
-            return;
-        }
-
         const hasServicesWithEmployees = saleInfo.saleDetails.some(detail =>
             detail.serviceId !== null && detail.empleadoId !== null
         );
 
-        if (hasServicesWithEmployees &&
-            (!saleInfo.appointmentData.Init_Time ||
-                !saleInfo.appointmentData.Finish_Time)) {
-            show_alerta('Debe especificar el horario de la cita para los servicios', 'warning');
-            return;
+        if (hasServicesWithEmployees) {
+            if (!saleInfo.appointmentData.Init_Time ||
+                !saleInfo.appointmentData.Finish_Time ||
+                !saleInfo.appointmentData.Date) {
+                show_alerta('Debe especificar el horario completo de la cita (fecha, hora inicio y hora fin) para los servicios', 'warning');
+                return;
+            }
+
+            // Validar disponibilidad del empleado
+            const { isValid: isEmployeeAvailable, message: employeeMessage } = validateEmployeeAvailability();
+            if (!isEmployeeAvailable) {
+                show_alerta(employeeMessage, 'error');
+                return;
+            }
+
+            // Validar tiempo de la cita
+            const { isValid: isTimeValid, message: timeMessage } = validateAppointmentTime();
+            if (!isTimeValid) {
+                show_alerta(timeMessage, 'error');
+                return;
+            }
+
+            // Validar disponibilidad de la cita
+            const { isValid: isAppointmentAvailable, message: appointmentMessage } = validateAppointmentAvailability();
+            if (!isAppointmentAvailable) {
+                show_alerta(appointmentMessage, 'error');
+                return;
+            }
         }
 
         // Asegurarse de usar exactamente la fecha seleccionada
-        const selectedDate = new Date(saleInfo.appointmentData.Date);
+        const selectedDate = saleInfo.appointmentData.Date 
+            ? new Date(saleInfo.appointmentData.Date)
+            : new Date();
         selectedDate.setHours(0, 0, 0, 0); // Resetear horas para evitar problemas de zona horaria
 
         // Crear una copia del saleInfo para no modificar el estado original
@@ -572,6 +579,13 @@ export default function Component() {
         try {
             await axios.post('https://andromeda-api.onrender.com/api/sales', saleInfoToSend);
             show_alerta('Cita registrada con éxito', 'success');
+            
+            // Limpiar localStorage
+            localStorage.removeItem('selectedProducts');
+            localStorage.removeItem('saleInfo');
+            localStorage.removeItem('subtotalProducts');
+            localStorage.removeItem('subtotalServices');
+            
             setSaleInfo({
                 Billnumber: '',
                 SaleDate: new Date().toISOString().split('T')[0],
@@ -587,11 +601,14 @@ export default function Component() {
                 saleDetails: []
             });
             setSelectedProducts([]);
+            setSubtotalProducts(0);
+            setSubtotalServices(0);
 
             navigate('/appointmentView');
         } catch (error) {
             console.error('Error al registrar la cita:', error);
-            show_alerta('Error al registrar la cita', 'error');
+            const errorMessage = error.response?.data?.message || error.message || 'Error al registrar la cita';
+            show_alerta(`Error: ${errorMessage}`, 'error');
         }
     };
 

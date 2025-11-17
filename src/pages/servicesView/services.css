@@ -1,0 +1,165 @@
+/* Estilos responsive para la página de administración de servicios */
+
+@media screen and (max-width: 768px) {
+  .right-content .card {
+    padding: 15px !important;
+  }
+  
+  /* Layout del header de servicios */
+  .card .row {
+    margin: 0;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .card .col-sm-5,
+  .card .col-sm-7 {
+    width: 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
+  .card .col-sm-5 {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .card .col-sm-7 {
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Botón registrar */
+  .btn-register {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Búsqueda */
+  .searchBox {
+    width: 100% !important;
+    max-width: 100%;
+  }
+  
+  /* Tabla responsive */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+  }
+  
+  .table {
+    min-width: 800px;
+    font-size: 12px;
+  }
+  
+  .table thead th {
+    font-size: 11px !important;
+    padding: 10px 8px !important;
+    white-space: nowrap;
+  }
+  
+  .table tbody td {
+    font-size: 11px !important;
+    padding: 10px 8px !important;
+    word-break: break-word;
+  }
+  
+  /* Columna de descripción más pequeña en móvil */
+  .table tbody td:nth-child(4) {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Acciones */
+  .actions {
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+  }
+  
+  .actions button {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 6px !important;
+  }
+  
+  .actions .MuiSwitch-root {
+    margin: 0 5px;
+  }
+  
+  /* Modal responsive */
+  .modal-dialog {
+    margin: 10px;
+    max-width: calc(100% - 20px);
+  }
+  
+  .modal-body .row {
+    margin: 0;
+  }
+  
+  .modal-body .col-sm-6 {
+    width: 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  /* Paginación */
+  .table-footer {
+    justify-content: center;
+    margin-top: 15px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .right-content .card {
+    padding: 12px !important;
+  }
+  
+  .table {
+    min-width: 700px;
+    font-size: 11px;
+  }
+  
+  .table thead th {
+    font-size: 10px !important;
+    padding: 8px 6px !important;
+  }
+  
+  .table tbody td {
+    font-size: 10px !important;
+    padding: 8px 6px !important;
+  }
+  
+  .table tbody td:nth-child(4) {
+    max-width: 120px;
+  }
+  
+  .actions button {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 4px !important;
+  }
+  
+  .actions button svg {
+    font-size: 16px !important;
+  }
+  
+  .modal-dialog {
+    margin: 5px;
+    max-width: calc(100% - 10px);
+  }
+  
+  .modal-body {
+    padding: 15px 12px;
+  }
+  
+  .modal-body .form-control,
+  .modal-body .form-select {
+    font-size: 16px !important;
+    padding: 12px !important;
+  }
+}
+

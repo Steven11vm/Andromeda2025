@@ -141,7 +141,7 @@ function App() {
                   </PermissionCheck>
                 } />
                 <Route path="/appointmentRegister" element={
-                  <PermissionCheck requiredPermission="Citas registrar">
+                  <PermissionCheck requiredPermission="Citas">
                     <RegisterAppointment />
                   </PermissionCheck>
                 } />

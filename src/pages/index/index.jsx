@@ -32,11 +32,14 @@ const Index = () => {
                     <p>
                         La barbería es el lugar donde puedes conseguir un corte de pelo de alta calidad de barberos certificados, que no sólo son profesionales, sino también maestros con talento.
                     </p>
-
                 </div>
             </section>
 
-            <section ref={servicesRef}>
+            <section ref={servicesRef} style={{
+                paddingTop: '80px',
+                paddingBottom: '60px',
+                backgroundColor: '#f8f9fa'
+            }}>
                 <div className='d-flex align-items-center justify-content-center mt-5'>
                     <h2 className='tittle-landingPage'>Nuestros servicios</h2>
                 </div>
@@ -49,22 +52,17 @@ const Index = () => {
                     marginBottom: '20px',
                     textAlign: 'center',
                     padding: '10px 20px',
-                    color: '#333', // Assuming dark text on light background, adjust if needed
+                    color: '#333',
                     fontFamily: '"Poppins", sans-serif',
                     maxWidth: '800px',
                     margin: '20px auto',
+                    lineHeight: '1.6'
                 }}>
                     En esta sección, encontrará una selección de algunos de nuestros servicios, aquellos que son solicitados por nuestros clientes.
                 </p>
-                <div style={{
+                <div className="services-container" style={{
                     width: '100%',
                     padding: '10px 20px',
-                    '@media (min-width: 768px)': {
-                        padding: '10px 100px',
-                    },
-                    '@media (min-width: 1024px)': {
-                        padding: '10px 270px',
-                    },
                 }}>
                     <ServicesSection />
                 </div>
@@ -86,6 +84,7 @@ const Index = () => {
                     fontFamily: '"Poppins", sans-serif',
                     maxWidth: '800px',
                     margin: '0 auto 20px',
+                    lineHeight: '1.6'
                 }}>
                     En esta sección, encontrará una selección de algunos de nuestros servicios, aquellos que son solicitados por nuestros clientes.
                 </p>

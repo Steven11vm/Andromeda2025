@@ -121,18 +121,20 @@ const Header = ({ scrollToServices, scrollToContact }) => {
                     }
                     .nav-container {
                         position: fixed;
-                        top: 60px;
+                        top: 70px;
                         left: 0;
                         right: 0;
-                        height: calc(100vh - 60px);
-                        background-color: #000000;
+                        height: calc(100vh - 70px);
+                        background-color: rgba(0, 0, 0, 0.98);
+                        backdrop-filter: blur(10px);
                         flex-direction: column;
                         align-items: flex-start;
-                        padding: 20px;
+                        padding: 30px 20px;
                         transform: translateX(-100%);
-                        transition: transform 0.3s ease;
-                        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+                        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                        box-shadow: 4px 0 20px rgba(0,0,0,0.3);
                         overflow-y: auto;
+                        z-index: 1000;
                     }
                     .nav-container.nav-open {
                         transform: translateX(0);
@@ -140,15 +142,24 @@ const Header = ({ scrollToServices, scrollToContact }) => {
                     .navBar-index {
                         flex-direction: column;
                         width: 100%;
+                        gap: 0;
                     }
                     .navBar-index a {
-                        padding: 15px 0;
-                        border-bottom: 1px solid #eee;
+                        padding: 18px 0;
+                        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
                         font-size: 16px;
+                        font-weight: 500;
+                        letter-spacing: 1.5px;
+                        transition: all 0.3s ease;
+                        width: 100%;
+                    }
+                    .navBar-index a:hover {
+                        padding-left: 15px;
+                        color: #b89b58 !important;
                     }
                     .auth-buttons {
                         margin-left: 0;
-                        margin-top: 20px;
+                        margin-top: 30px;
                         width: 100%;
                     }
                     .user-menu {
@@ -157,10 +168,46 @@ const Header = ({ scrollToServices, scrollToContact }) => {
                     .user-menu .MuiButton-root {
                         width: 100%;
                         justify-content: flex-start;
+                        padding: 12px 0;
                     }
                     .book-now-btn {
                         width: 100%;
-                        padding: 12px !important;
+                        padding: 14px 24px !important;
+                        font-size: 15px !important;
+                        font-weight: 600 !important;
+                        letter-spacing: 1px !important;
+                    }
+                    .logo-index {
+                        font-size: 20px;
+                    }
+                    .logo-index img {
+                        width: 40px;
+                    }
+                    .logo-index span {
+                        font-size: 18px;
+                    }
+                }
+                @media (max-width: 480px) {
+                    .nav-container {
+                        top: 60px;
+                        padding: 25px 15px;
+                    }
+                    .navBar-index a {
+                        padding: 16px 0;
+                        font-size: 15px;
+                    }
+                    .book-now-btn {
+                        padding: 12px 20px !important;
+                        font-size: 14px !important;
+                    }
+                    .logo-index {
+                        font-size: 18px;
+                    }
+                    .logo-index img {
+                        width: 35px;
+                    }
+                    .logo-index span {
+                        font-size: 16px;
                     }
                 }
                 `}
@@ -173,11 +220,18 @@ const Header = ({ scrollToServices, scrollToContact }) => {
                 className="mobile-menu-icon" 
                 onClick={toggleNav}
                 sx={{
-                    color: '#000',
-                    padding: '8px'
+                    color: isScrolled ? '#fff' : '#fff',
+                    padding: '10px',
+                    backgroundColor: isScrolled ? 'rgba(184, 155, 88, 0.1)' : 'rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        backgroundColor: 'rgba(184, 155, 88, 0.2)',
+                        transform: 'scale(1.1)'
+                    }
                 }}
             >
-                <MenuIcon />
+                <MenuIcon sx={{ fontSize: '28px' }} />
             </IconButton>
             <div className={`nav-container ${isNavOpen ? 'nav-open' : ''}`}>
                 <nav className='navBar-index'>
@@ -252,4 +306,3 @@ const Header = ({ scrollToServices, scrollToContact }) => {
 };
 
 export default Header;
-
